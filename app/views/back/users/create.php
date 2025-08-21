@@ -1,6 +1,6 @@
 <div class="row justify-content-center">
   <div class="col-lg-8">
-    <div class="card">
+    <div class="card shadow-sm">
       <div class="card-body">
         <h2 class="card-title mb-4">Ajouter un utilisateur</h2>
         <form method="post" class="needs-validation" novalidate>
@@ -14,6 +14,26 @@
               <label for="prenom" class="form-label">Prénom</label>
               <input type="text" id="prenom" name="prenom" class="form-control" required>
               <div class="invalid-feedback">Prénom requis.</div>
+            </div>
+            <div class="col-md-6">
+              <label for="cin" class="form-label">CIN</label>
+              <input type="text" id="cin" name="cin" class="form-control">
+            </div>
+            <div class="col-md-6">
+              <label for="genre" class="form-label">Genre</label>
+              <select id="genre" name="genre" class="form-select">
+                <option value="">—</option>
+                <option value="Homme">Homme</option>
+                <option value="Femme">Femme</option>
+              </select>
+            </div>
+            <div class="col-md-12">
+              <label for="adresse" class="form-label">Adresse</label>
+              <input type="text" id="adresse" name="adresse" class="form-control">
+            </div>
+            <div class="col-md-6">
+              <label for="telephone" class="form-label">Téléphone</label>
+              <input type="text" id="telephone" name="telephone" class="form-control">
             </div>
             <div class="col-md-6">
               <label for="email" class="form-label">Email</label>

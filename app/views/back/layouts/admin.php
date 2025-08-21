@@ -32,9 +32,8 @@
   <header id="header" class="header dark-background d-flex flex-column">
     <i class="header-toggle d-xl-none bi bi-list"></i>
 
-    <div class="profile-img">
-      <img src="assets/img/my-profile-img.jpg" alt="" class="img-fluid rounded-circle">
-    </div>
+ <br>
+ </br>
 
     <a href="index.php" class="logo d-flex align-items-center justify-content-center">
       <h1 class="sitename">Admin</h1>
@@ -47,13 +46,21 @@
       <a href="#" class="google-plus"><i class="bi bi-skype"></i></a>
       <a href="#" class="linkedin"><i class="bi bi-linkedin"></i></a>
     </div>
-
+ <br>
+ </br>
     <nav id="navmenu" class="navmenu">
       <ul>
-        <?php $role = $_SESSION['user']['role'] ?? null; $userId = $_SESSION['user']['id'] ?? null; ?>
-        <?php if ($role === 'admin'): ?>
+        <?php $role = $_SESSION['user']['role'] ?? null; $roleNorm = is_string($role) ? strtolower($role) : $role; $userId = $_SESSION['user']['id'] ?? null; ?>
+        <?php if ($roleNorm === 'admin'): ?>
           <li><a href="index.php?controller=user&action=index"><i class="bi bi-people navicon"></i> Utilisateurs</a></li>
+          <li><a href="index.php?controller=activities&action=index"><i class="bi bi-clipboard2-check navicon"></i> Activités</a></li>
+          <li><a href="index.php?controller=inscriptions&action=index"><i class="bi bi-list-check navicon"></i> Inscriptions</a></li>
           <li><a href="#"><i class="bi bi-gear navicon"></i> Paramètres</a></li>
+
+        <?php elseif ($roleNorm === 'entraineur'): ?>
+          <li><a href="index.php?controller=user&action=edit&id=<?= urlencode((string)$userId) ?>"><i class="bi bi-person navicon"></i> Mon profil</a></li>
+          <li><a href="index.php?controller=activities&action=index"><i class="bi bi-clipboard2-check navicon"></i> Mes activités</a></li>
+          <li><a href="index.php?controller=inscriptions&action=index"><i class="bi bi-list-check navicon"></i> Inscriptions</a></li>
         <?php else: ?>
           <li><a href="index.php?controller=user&action=edit&id=<?= urlencode((string)$userId) ?>"><i class="bi bi-person navicon"></i> Mon profil</a></li>
         <?php endif; ?>

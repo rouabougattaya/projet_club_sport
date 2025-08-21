@@ -5,13 +5,13 @@ require_once __DIR__ . '/../../core/Flash.php';
 
 class AuthController
 {
-    private function render(string $view, array $data = []): void
+    private function render(string $view, array $data = [], string $layout = 'back/layouts/admin'): void
     {
         extract($data, EXTR_SKIP);
         ob_start();
         require __DIR__ . '/../views/' . $view . '.php';
         $content = ob_get_clean();
-        require __DIR__ . '/../views/back/layouts/admin.php';
+        require __DIR__ . '/../views/' . $layout . '.php';
     }
 
     public function login()
@@ -64,7 +64,12 @@ class AuthController
                         'role' => $user['role'],
                     ];
                     Flash::add('success', 'Connexion réussie. Bienvenue !');
-                    header('Location: index.php?controller=user&action=index');
+                    $role = strtolower((string)($user['role'] ?? ''));
+                    if (in_array($role, ['admin', 'entraineur'], true)) {
+                        header('Location: index.php?controller=user&action=index');
+                    } else {
+                        header('Location: index.php?controller=front&action=home');
+                    }
                     exit;
                 }
             }
@@ -72,11 +77,11 @@ class AuthController
             Flash::add('danger', 'Identifiants invalides');
             $this->render('back/auth/login', [
                 'email' => htmlspecialchars($email, ENT_QUOTES, 'UTF-8'),
-            ]);
+            ], 'back/auth/auth');
             return;
         }
 
-        $this->render('back/auth/login');
+        $this->render('back/auth/login', [], 'back/auth/auth');
     }
 
     public function logout()
