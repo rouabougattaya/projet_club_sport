@@ -31,6 +31,13 @@ class Inscription {
 		return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
 	}
 
+	public function getById(int $id): ?array {
+		$stmt = $this->pdo->prepare("SELECT * FROM inscriptions WHERE id = ? LIMIT 1");
+		$stmt->execute([$id]);
+		$row = $stmt->fetch(PDO::FETCH_ASSOC);
+		return $row ?: null;
+	}
+
 	public function getByIdWithRelations(int $id): ?array {
 		$sql = "SELECT i.*, 
 				a.nom AS activity_nom, a.id_entraineur AS activity_coach_id,
@@ -45,9 +52,99 @@ class Inscription {
 		return $row ?: null;
 	}
 
+	public function createInscription(int $activityId, int $userId, string $status): bool {
+		$stmt = $this->pdo->prepare("INSERT INTO inscriptions (activity_id, user_id, statut, date_inscription) VALUES (?, ?, ?, NOW())");
+		return $stmt->execute([$activityId, $userId, $status]);
+	}
+
+	public function existsForUserActivity(int $userId, int $activityId, array $statuses): bool {
+		$placeholders = str_repeat('?,', count($statuses) - 1) . '?';
+		$sql = "SELECT COUNT(*) FROM inscriptions WHERE user_id = ? AND activity_id = ? AND statut IN ($placeholders)";
+		$params = array_merge([$userId, $activityId], $statuses);
+		$stmt = $this->pdo->prepare($sql);
+		$stmt->execute($params);
+		return $stmt->fetchColumn() > 0;
+	}
+
+	public function countForActivity(int $activityId, array $statuses): int {
+		$placeholders = str_repeat('?,', count($statuses) - 1) . '?';
+		$sql = "SELECT COUNT(*) FROM inscriptions WHERE activity_id = ? AND statut IN ($placeholders)";
+		$params = array_merge([$activityId], $statuses);
+		$stmt = $this->pdo->prepare($sql);
+		$stmt->execute($params);
+		return (int)$stmt->fetchColumn();
+	}
+
+	public function getUpcomingByUser(int $userId): array {
+		$sql = "SELECT i.*, 
+				a.nom AS activity_nom, a.description, a.date_activite, a.heure_debut, a.heure_fin,
+				u.nom AS coach_nom, u.prenom AS coach_prenom
+			FROM inscriptions i
+			INNER JOIN activities a ON a.id = i.activity_id
+			INNER JOIN users u ON u.id = a.id_entraineur
+			WHERE i.user_id = ? 
+			AND i.statut IN ('en_attente', 'confirmee', 'validée', 'validee')
+			ORDER BY a.date_activite ASC, a.heure_debut ASC";
+		$stmt = $this->pdo->prepare($sql);
+		$stmt->execute([$userId]);
+		return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+	}
+
+	public function getHistoryByUser(int $userId): array {
+		$sql = "SELECT i.*, 
+				a.nom AS activity_nom, a.description, a.date_activite, a.heure_debut, a.heure_fin,
+				u.nom AS coach_nom, u.prenom AS coach_prenom
+			FROM inscriptions i
+			INNER JOIN activities a ON a.id = i.activity_id
+			INNER JOIN users u ON u.id = a.id_entraineur
+			WHERE i.user_id = ? 
+			AND i.statut IN ('annulee', 'annulée', 'annule', 'terminee', 'terminée', 'termine')
+			ORDER BY a.date_activite DESC, i.date_inscription DESC";
+		$stmt = $this->pdo->prepare($sql);
+		$stmt->execute([$userId]);
+		return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+	}
+
 	public function updateStatus(int $id, string $newStatus): bool {
 		$stmt = $this->pdo->prepare('UPDATE inscriptions SET statut = ? WHERE id = ?');
 		return $stmt->execute([$newStatus, $id]);
+	}
+
+	public function getAllInscriptionsByUser(int $userId): array {
+		$sql = "SELECT i.*, 
+				a.nom AS activity_nom, a.description, a.date_activite, a.heure_debut, a.heure_fin,
+				u.nom AS coach_nom, u.prenom AS coach_prenom
+			FROM inscriptions i
+			INNER JOIN activities a ON a.id = i.activity_id
+			INNER JOIN users u ON u.id = a.id_entraineur
+			WHERE i.user_id = ? 
+			ORDER BY a.date_activite DESC, i.date_inscription DESC";
+		$stmt = $this->pdo->prepare($sql);
+		$stmt->execute([$userId]);
+		return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+	}
+
+	public function getByUserActivity(int $userId, int $activityId): ?array {
+		$sql = "SELECT i.*, 
+				a.nom AS activity_nom, a.description, a.date_activite, a.heure_debut, a.heure_fin,
+				u.nom AS coach_nom, u.prenom AS coach_prenom
+			FROM inscriptions i
+			INNER JOIN activities a ON a.id = i.activity_id
+			INNER JOIN users u ON u.id = a.id_entraineur
+			WHERE i.user_id = ? AND i.activity_id = ?
+			ORDER BY i.date_inscription DESC LIMIT 1";
+		$stmt = $this->pdo->prepare($sql);
+		$stmt->execute([$userId, $activityId]);
+		$row = $stmt->fetch(PDO::FETCH_ASSOC);
+		return $row ?: null;
+	}
+
+	/**
+	 * Supprime complètement une inscription de la base de données
+	 */
+	public function delete(int $id): bool {
+		$stmt = $this->pdo->prepare("DELETE FROM inscriptions WHERE id = ?");
+		return $stmt->execute([$id]);
 	}
 }
 

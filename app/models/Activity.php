@@ -17,7 +17,11 @@ class Activity {
 	}
 
 	public function getById(int $id): ?array {
-		$stmt = $this->pdo->prepare("SELECT * FROM activities WHERE id = ? LIMIT 1");
+		$sql = "SELECT a.*, u.prenom AS coach_prenom, u.nom AS coach_nom
+				FROM activities a
+				LEFT JOIN users u ON u.id = a.id_entraineur
+				WHERE a.id = ? LIMIT 1";
+		$stmt = $this->pdo->prepare($sql);
 		$stmt->execute([$id]);
 		$row = $stmt->fetch(PDO::FETCH_ASSOC);
 		return $row ?: null;
@@ -31,6 +35,26 @@ class Activity {
 				ORDER BY CASE a.statut WHEN 1 THEN 1 ELSE 2 END, a.date_activite DESC, a.heure_debut DESC, a.id DESC";
 		$stmt = $this->pdo->prepare($sql);
 		$stmt->execute([$coachId]);
+		return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+	}
+
+	public function getAvailableActivities(): array {
+		$sql = "SELECT a.*, u.prenom AS coach_prenom, u.nom AS coach_nom
+				FROM activities a
+				LEFT JOIN users u ON u.id = a.id_entraineur
+				ORDER BY a.date_activite DESC, a.heure_debut DESC, a.id DESC";
+		$stmt = $this->pdo->query($sql);
+		return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+	}
+
+	public function getTrulyAvailableActivities(): array {
+		$sql = "SELECT a.*, u.prenom AS coach_prenom, u.nom AS coach_nom
+				FROM activities a
+				LEFT JOIN users u ON u.id = a.id_entraineur
+				WHERE a.statut = 'active' 
+				AND a.date_activite >= CURDATE()
+				ORDER BY a.date_activite ASC, a.heure_debut ASC";
+		$stmt = $this->pdo->query($sql);
 		return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
 	}
 
