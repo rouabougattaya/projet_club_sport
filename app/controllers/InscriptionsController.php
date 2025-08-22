@@ -72,6 +72,22 @@ class InscriptionsController {
 		header('Location: index.php?controller=inscriptions&action=index');
 		exit;
 	}
+
+	public function refuse(): void {
+		$this->requireAuth(['admin', 'entraineur']);
+		$pdo = Database::connect();
+		$inscModel = new Inscription($pdo);
+		$sessionUser = $_SESSION['user'];
+		$isAdmin = strtolower((string)($sessionUser['role'] ?? '')) === 'admin';
+		$id = (int)($_GET['id'] ?? 0);
+		$insc = $inscModel->getByIdWithRelations($id);
+		if (!$insc) { http_response_code(404); echo 'Inscription introuvable'; exit; }
+		if (!$isAdmin && (int)$insc['activity_coach_id'] !== (int)$sessionUser['id']) { http_response_code(403); echo 'Accès refusé'; exit; }
+		$inscModel->updateStatus($id, 'refusée');
+		Flash::add('success', 'Inscription refusée');
+		header('Location: index.php?controller=inscriptions&action=index');
+		exit;
+	}
 }
 
 

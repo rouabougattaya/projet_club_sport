@@ -58,6 +58,40 @@ class Activity {
 		return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
 	}
 
+	/**
+	 * Vérifie si une activité est passée (date + heure de fin dépassées)
+	 */
+	public function isActivityExpired(int $activityId): bool {
+		$sql = "SELECT date_activite, heure_fin 
+				FROM activities 
+				WHERE id = ?";
+		$stmt = $this->pdo->prepare($sql);
+		$stmt->execute([$activityId]);
+		$activity = $stmt->fetch(PDO::FETCH_ASSOC);
+		
+		if (!$activity) {
+			return true; // Si l'activité n'existe pas, considérer comme expirée
+		}
+		
+		// Créer un timestamp pour la fin de l'activité
+		$activityEndTime = $activity['date_activite'] . ' ' . $activity['heure_fin'];
+		$currentTime = date('Y-m-d H:i:s');
+		
+		return $activityEndTime < $currentTime;
+	}
+
+	/**
+	 * Met à jour automatiquement le statut des activités passées vers "terminée"
+	 */
+	public function updateExpiredActivities(): void {
+		$sql = "UPDATE activities 
+				SET statut = 0 
+				WHERE statut = 1 
+				AND CONCAT(date_activite, ' ', heure_fin) < NOW()";
+		$stmt = $this->pdo->prepare($sql);
+		$stmt->execute();
+	}
+
 	public function create(array $data): bool {
 		$stmt = $this->pdo->prepare("INSERT INTO activities (nom, description, date_activite, heure_debut, heure_fin, capacite, statut, id_entraineur) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
 		return $stmt->execute([

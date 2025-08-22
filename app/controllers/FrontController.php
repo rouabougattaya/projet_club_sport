@@ -44,6 +44,10 @@ class FrontController {
 		
 		$pdo = Database::connect();
 		$activityModel = new Activity($pdo);
+		
+		// Mettre à jour automatiquement le statut des activités passées
+		$activityModel->updateExpiredActivities();
+		
 		$availableActivities = $activityModel->getAvailableActivities();
 		
 		require __DIR__ . '/../views/front/activities.php';
@@ -70,6 +74,9 @@ class FrontController {
 			header('Location: index.php?controller=front&action=activities');
 			exit;
 		}
+		
+		// Vérifier si l'activité est passée
+		$isExpired = $activityModel->isActivityExpired($activityId);
 		
 		// Vérifier si l'utilisateur est déjà inscrit
 		$isSubscribed = $inscriptionModel->existsForUserActivity($userId, $activityId, ['en_attente', 'confirmee']);
@@ -112,6 +119,13 @@ class FrontController {
 		// Vérifier si l'activité est active
 		if ($activity['statut'] !== 'active') {
 			Flash::add('danger', 'Cette activité n\'est plus disponible');
+			header('Location: index.php?controller=front&action=activity&id=' . $activityId);
+			exit;
+		}
+		
+		// Vérifier si l'activité est passée
+		if ($activityModel->isActivityExpired($activityId)) {
+			Flash::add('danger', 'Cette activité est déjà terminée, vous ne pouvez plus vous inscrire');
 			header('Location: index.php?controller=front&action=activity&id=' . $activityId);
 			exit;
 		}

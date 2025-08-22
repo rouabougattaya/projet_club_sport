@@ -28,17 +28,19 @@
 							<td><span class="badge bg-secondary-subtle text-secondary"><?= htmlspecialchars((string)$insc['date_inscription']) ?></span></td>
 							<td>
 								<?php $s = strtolower((string)$insc['statut']);
-									$label = ($s === 'validée') ? 'Validée' : (($s === 'annulée') ? 'Annulée' : (($s === 'terminée') ? 'Terminée' : 'En attente'));
-									$cls = ($label === 'Validée') ? 'bg-success' : (($label === 'Annulée') ? 'bg-secondary' : (($label === 'Terminée') ? 'bg-dark' : 'bg-warning text-dark'));
+									$label = ($s === 'validée') ? 'Validée' : (($s === 'refusée') ? 'Refusée' : (($s === 'annulée') ? 'Annulée' : (($s === 'terminée') ? 'Terminée' : 'En attente')));
+									$cls = ($label === 'Validée') ? 'bg-success' : (($label === 'Refusée') ? 'bg-danger' : (($label === 'Annulée') ? 'bg-secondary' : (($label === 'Terminée') ? 'bg-dark' : 'bg-warning text-dark')));
 								?>
 								<span class="badge <?= $cls ?>"><?= $label ?></span>
 							</td>
 							<td class="text-end">
 								<?php if ($s === 'en_attente'): ?>
 									<a class="btn btn-sm btn-success" href="index.php?controller=inscriptions&action=validate&id=<?= urlencode((string)$insc['id']) ?>">Valider</a>
-									<a class="btn btn-sm btn-outline-danger" href="index.php?controller=inscriptions&action=cancel&id=<?= urlencode((string)$insc['id']) ?>" onclick="return confirm('Annuler cette inscription ?');">Annuler</a>
+									<a class="btn btn-sm btn-outline-danger" href="index.php?controller=inscriptions&action=refuse&id=<?= urlencode((string)$insc['id']) ?>" onclick="return confirm('Refuser cette inscription ?');">Refuser</a>
 								<?php elseif ($s === 'validée'): ?>
-									<a class="btn btn-sm btn-outline-danger" href="index.php?controller=inscriptions&action=cancel&id=<?= urlencode((string)$insc['id']) ?>" onclick="return confirm('Annuler cette inscription ?');">Annuler</a>
+									<a class="btn btn-sm btn-outline-danger" href="index.php?controller=inscriptions&action=refuse&id=<?= urlencode((string)$insc['id']) ?>" onclick="return confirm('Refuser cette inscription ?');">Refuser</a>
+								<?php elseif ($s === 'refusée' || $s === 'annulée' || $s === 'terminée'): ?>
+									<button class="btn btn-sm btn-secondary" disabled>Aucune action</button>
 								<?php else: ?>
 									<button class="btn btn-sm btn-secondary" disabled>Aucune action</button>
 								<?php endif; ?>

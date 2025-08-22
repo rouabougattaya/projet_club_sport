@@ -162,6 +162,11 @@
                   <div class="alert alert-warning">
                     Cette activité n'est plus disponible.
                   </div>
+                <?php elseif (isset($isExpired) && $isExpired): ?>
+                  <div class="alert alert-danger">
+                    <strong>Cette activité est déjà terminée !</strong><br>
+                    Vous ne pouvez plus vous inscrire à cette activité car elle s'est déjà déroulée.
+                  </div>
                 <?php elseif ($availableSpots <= 0): ?>
                   <div class="alert alert-danger">
                     Cette activité est complète.
@@ -215,7 +220,7 @@
                       </div>
                     </form>
                   <?php endif; ?>
-                <?php else: ?>
+                <?php elseif (!isset($isExpired) || !$isExpired): ?>
                   <form method="POST" action="index.php?controller=front&action=subscribe">
                     <input type="hidden" name="activity_id" value="<?= $activity['id'] ?>">
                     <div class="d-grid">

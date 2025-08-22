@@ -212,13 +212,15 @@
                                   </span>
                                 </td>
                                 <td class="py-2 px-3">
-                                  <span class="badge bg-<?= in_array(strtolower(trim($ins['statut'])), ['terminee', 'terminée', 'termine']) ? 'success' : 'secondary' ?> fs-6 px-2 py-1 rounded-pill shadow-sm">
+                                  <span class="badge bg-<?= in_array(strtolower(trim($ins['statut'])), ['terminee', 'terminée', 'termine']) ? 'success' : (in_array(strtolower(trim($ins['statut'])), ['refusée', 'refusee']) ? 'danger' : 'secondary') ?> fs-6 px-2 py-1 rounded-pill shadow-sm">
                                     <?php 
                                     $exactStatus = $ins['statut'];
                                     if (in_array(strtolower(trim($exactStatus)), ['terminee', 'terminée', 'termine'])) {
                                         echo '✅ Terminée';
                                     } elseif (in_array(strtolower(trim($exactStatus)), ['annulee', 'annulée', 'annule'])) {
                                         echo '🚫 Annulée';
+                                    } elseif (in_array(strtolower(trim($exactStatus)), ['refusée', 'refusee'])) {
+                                        echo '❌ Refusée';
                                     } else {
                                         echo '❓ ' . ucfirst($exactStatus);
                                     }

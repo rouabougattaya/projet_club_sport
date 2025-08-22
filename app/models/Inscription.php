@@ -98,7 +98,7 @@ class Inscription {
 			INNER JOIN activities a ON a.id = i.activity_id
 			INNER JOIN users u ON u.id = a.id_entraineur
 			WHERE i.user_id = ? 
-			AND i.statut IN ('annulee', 'annulée', 'annule', 'terminee', 'terminée', 'termine')
+			AND i.statut IN ('annulee', 'annulée', 'annule', 'terminee', 'terminée', 'termine', 'refusée', 'refusee')
 			ORDER BY a.date_activite DESC, i.date_inscription DESC";
 		$stmt = $this->pdo->prepare($sql);
 		$stmt->execute([$userId]);
