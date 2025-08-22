@@ -94,9 +94,6 @@
                   <div class="flex-grow-1">
                     <div class="d-flex justify-content-between align-items-start mb-3">
                       <h2 class="text-primary mb-2"><?= htmlspecialchars($activity['nom']) ?></h2>
-                      <span class="badge bg-<?= $activity['statut'] === 'active' ? 'success' : 'secondary' ?> fs-6 px-3 py-2">
-                        <?= $activity['statut'] === 'active' ? 'Active' : 'Inactive' ?>
-                      </span>
                     </div>
                     
                     <div class="activity-meta mb-4">

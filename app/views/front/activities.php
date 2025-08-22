@@ -117,9 +117,6 @@
                             <?= htmlspecialchars($activity['nom']) ?>
                           </a>
                         </h5>
-                        <span class="badge bg-<?= $activity['statut'] === 'active' ? 'success' : 'warning' ?> fs-6">
-                          <?= $activity['statut'] === 'active' ? '✅ Active' : '⏸️ Inactive' ?>
-                        </span>
                       </div>
                     </div>
                   </div>
