@@ -75,7 +75,38 @@ class Inscription {
 		return (int)$stmt->fetchColumn();
 	}
 
+	/**
+	 * Retourne les statuts considérés comme actifs (inscriptions en cours)
+	 */
+	private function getActiveStatuses(): array {
+		return ['en_attente', 'confirmee', 'validée', 'validee'];
+	}
+
+	/**
+	 * Vérifie si un utilisateur a une inscription active pour une activité
+	 */
+	public function hasActiveInscription(int $userId, int $activityId): bool {
+		return $this->existsForUserActivity($userId, $activityId, $this->getActiveStatuses());
+	}
+
+	/**
+	 * Compte les inscriptions actives pour une activité
+	 */
+	public function countActiveInscriptions(int $activityId): int {
+		return $this->countForActivity($activityId, $this->getActiveStatuses());
+	}
+
+	/**
+	 * Vérifie si un utilisateur peut s'inscrire à une activité
+	 * (pas d'inscription active existante)
+	 */
+	public function canUserSubscribe(int $userId, int $activityId): bool {
+		return !$this->hasActiveInscription($userId, $activityId);
+	}
+
 	public function getUpcomingByUser(int $userId): array {
+		$activeStatuses = $this->getActiveStatuses();
+		$placeholders = str_repeat('?,', count($activeStatuses) - 1) . '?';
 		$sql = "SELECT i.*, 
 				a.nom AS activity_nom, a.description, a.date_activite, a.heure_debut, a.heure_fin,
 				u.nom AS coach_nom, u.prenom AS coach_prenom
@@ -83,10 +114,10 @@ class Inscription {
 			INNER JOIN activities a ON a.id = i.activity_id
 			INNER JOIN users u ON u.id = a.id_entraineur
 			WHERE i.user_id = ? 
-			AND i.statut IN ('en_attente', 'confirmee', 'validée', 'validee')
+			AND i.statut IN ($placeholders)
 			ORDER BY a.date_activite ASC, a.heure_debut ASC";
 		$stmt = $this->pdo->prepare($sql);
-		$stmt->execute([$userId]);
+		$stmt->execute(array_merge([$userId], $activeStatuses));
 		return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
 	}
 
@@ -98,7 +129,7 @@ class Inscription {
 			INNER JOIN activities a ON a.id = i.activity_id
 			INNER JOIN users u ON u.id = a.id_entraineur
 			WHERE i.user_id = ? 
-			AND i.statut IN ('annulee', 'annulée', 'annule', 'terminee', 'terminée', 'termine', 'refusée', 'refusee')
+			AND i.statut IN ('annulee', 'annulée', 'annule', 'terminee', 'terminée', 'termine', 'refusée', 'refusee', 'validée', 'validee', 'confirmee')
 			ORDER BY a.date_activite DESC, i.date_inscription DESC";
 		$stmt = $this->pdo->prepare($sql);
 		$stmt->execute([$userId]);

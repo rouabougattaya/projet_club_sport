@@ -30,14 +30,28 @@ class ActivitiesController {
 		$this->requireAuth(['admin', 'entraineur']);
 		$pdo = Database::connect();
 		$activityModel = new Activity($pdo);
+		require_once __DIR__ . '/../models/Inscription.php';
+		$inscriptionModel = new Inscription($pdo);
+		
 		$sessionUser = $_SESSION['user'];
 		$isAdmin = strtolower((string)($sessionUser['role'] ?? '')) === 'admin';
+		
 		if ($isAdmin) {
 			$activities = $activityModel->getAll();
 		} else {
 			$activities = $activityModel->getByCoachId((int)$sessionUser['id']);
 		}
-		$this->render('back/activities/index', ['activities' => $activities, 'isAdmin' => $isAdmin]);
+		
+		// Récupérer les statistiques d'inscriptions pour chaque activité
+		foreach ($activities as &$activity) {
+			$activity['inscriptions_count'] = $inscriptionModel->countActiveInscriptions((int)$activity['id']);
+		}
+		
+		$this->render('back/activities/index', [
+			'activities' => $activities, 
+			'isAdmin' => $isAdmin,
+			'inscriptionModel' => $inscriptionModel
+		]);
 	}
 
 	public function create(): void {
@@ -68,16 +82,21 @@ class ActivitiesController {
 			if (isset($post['capacite']) && (!is_numeric($post['capacite']) || (int)$post['capacite'] < 0)) {
 				$errors[] = 'La capacité doit être un entier positif.';
 			}
-			if (isset($post['statut']) && !in_array($post['statut'], ['actif','inactif'], true)) {
-				$errors[] = 'Le statut est invalide.';
+			// Validation du statut
+			if (isset($post['statut'])) {
+				$statut = trim($post['statut']);
+				if (!in_array($statut, ['active', 'Inactif'], true)) {
+					$errors[] = 'Le statut est invalide. Valeurs acceptées: active, Inactif';
+				}
 			}
 			// Optional basic time range validation
 			if (!empty($post['heure_debut']) && !empty($post['heure_fin']) && $post['heure_fin'] < $post['heure_debut']) {
 				$errors[] = "L'heure de fin doit être après l'heure de début.";
 			}
 			if (empty($errors)) {
-				// Normalize statut to numeric 1/0 for storage
-				$post['statut'] = ($post['statut'] ?? 'actif') === 'actif' ? 1 : 0;
+				// Normalize statut for storage (use ENUM values directly)
+				$post['statut'] = isset($post['statut']) ? trim($post['statut']) : 'active';
+				
 				$activityModel->create($post);
 				Flash::add('success', 'Activité créée');
 				header('Location: index.php?controller=activities&action=index');
@@ -121,16 +140,21 @@ class ActivitiesController {
 			if (isset($post['capacite']) && (!is_numeric($post['capacite']) || (int)$post['capacite'] < 0)) {
 				$errors[] = 'La capacité doit être un entier positif.';
 			}
-			if (isset($post['statut']) && !in_array($post['statut'], ['actif','inactif'], true)) {
-				$errors[] = 'Le statut est invalide.';
+			// Validation du statut
+			if (isset($post['statut'])) {
+				$statut = trim($post['statut']);
+				if (!in_array($statut, ['active', 'Inactif'], true)) {
+					$errors[] = 'Le statut est invalide. Valeurs acceptées: active, Inactif';
+				}
 			}
 			// Optional basic time range validation
 			if (!empty($post['heure_debut']) && !empty($post['heure_fin']) && $post['heure_fin'] < $post['heure_debut']) {
 				$errors[] = "L'heure de fin doit être après l'heure de début.";
 			}
 			if (empty($errors)) {
-				// Normalize statut to numeric 1/0 for storage
-				$post['statut'] = ($post['statut'] ?? 'actif') === 'actif' ? 1 : 0;
+				// Normalize statut for storage (use ENUM values directly)
+				$post['statut'] = isset($post['statut']) ? trim($post['statut']) : 'active';
+				
 				$activityModel->update($id, $post);
 				Flash::add('success', 'Activité mise à jour');
 				header('Location: index.php?controller=activities&action=index');

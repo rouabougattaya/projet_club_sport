@@ -32,7 +32,7 @@ class Activity {
 				FROM activities a
 				LEFT JOIN users u ON u.id = a.id_entraineur
 				WHERE a.id_entraineur = ?
-				ORDER BY CASE a.statut WHEN 1 THEN 1 ELSE 2 END, a.date_activite DESC, a.heure_debut DESC, a.id DESC";
+				ORDER BY CASE a.statut WHEN 'active' THEN 1 ELSE 2 END, a.date_activite DESC, a.heure_debut DESC, a.id DESC";
 		$stmt = $this->pdo->prepare($sql);
 		$stmt->execute([$coachId]);
 		return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
@@ -42,6 +42,7 @@ class Activity {
 		$sql = "SELECT a.*, u.prenom AS coach_prenom, u.nom AS coach_nom
 				FROM activities a
 				LEFT JOIN users u ON u.id = a.id_entraineur
+				WHERE a.statut = 'active'
 				ORDER BY a.date_activite DESC, a.heure_debut DESC, a.id DESC";
 		$stmt = $this->pdo->query($sql);
 		return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
@@ -85,8 +86,8 @@ class Activity {
 	 */
 	public function updateExpiredActivities(): void {
 		$sql = "UPDATE activities 
-				SET statut = 0 
-				WHERE statut = 1 
+				SET statut = 'Inactif' 
+				WHERE statut = 'active' 
 				AND CONCAT(date_activite, ' ', heure_fin) < NOW()";
 		$stmt = $this->pdo->prepare($sql);
 		$stmt->execute();
@@ -101,7 +102,7 @@ class Activity {
 			$data['heure_debut'] ?? null,
 			$data['heure_fin'] ?? null,
 			isset($data['capacite']) ? (int)$data['capacite'] : 0,
-			isset($data['statut']) ? (int)$data['statut'] : 1,
+			$data['statut'] ?? 'active',
 			(int)($data['id_entraineur'] ?? 0),
 		]);
 	}
@@ -115,7 +116,7 @@ class Activity {
 			$data['heure_debut'] ?? null,
 			$data['heure_fin'] ?? null,
 			isset($data['capacite']) ? (int)$data['capacite'] : 0,
-			isset($data['statut']) ? (int)$data['statut'] : 1,
+			$data['statut'] ?? 'active',
 			(int)($data['id_entraineur'] ?? 0),
 			$id,
 		]);

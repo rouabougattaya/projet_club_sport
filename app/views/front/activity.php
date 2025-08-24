@@ -185,7 +185,7 @@
                           $statusClass = 'warning';
                           $statusText = 'En attente de validation';
                           break;
-                      case 'confirmee':
+                      case 'validée':
                           $statusClass = 'success';
                           $statusText = 'Inscription validée !';
                           break;

@@ -90,7 +90,7 @@
           <div class="col-md-8 section-heading">
             <span class="subheading">Mes Activités</span>
             <h2 class="heading mb-3">Historique Personnel</h2>
-            <p>Consultez vos inscriptions <strong>terminées</strong> et <strong>annulées</strong>.</p>
+            <p>Consultez toutes vos inscriptions avec leur statut : <strong>validé</strong>, <strong>annulé</strong>, <strong>refusé</strong>, <strong>terminé</strong>.</p>
           </div>
         </div>
 
@@ -106,7 +106,21 @@
               </div>
               <div class="card-body p-4">
                 <div class="row g-4">
-                  <div class="col-md-4">
+                  <div class="col-md-3">
+                  <div class="stat-card text-center p-4 rounded-3 bg-orange bg-opacity-10 border border-orange border-2">
+                  <div class="stat-icon mb-3">
+                        <span class="badge bg-success fs-1 p-3 rounded-circle"></span>
+                      </div>
+                      <div class="stat-number mb-2">
+                        <h2 class="text-orange fw-bold mb-0"><?= count(array_filter($userHistory, function($ins) { return in_array(strtolower(trim($ins['statut'])), ['validee', 'validée', 'confirmee']); })) ?></h2>
+                      </div>
+                      <div class="stat-label">
+                        <h6 class="text-orange fw-bold mb-1">Validées</h6>
+                        <small class="text-muted">Inscriptions confirmées</small>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-3">
                     <div class="stat-card text-center p-4 rounded-3 bg-orange bg-opacity-10 border border-orange border-2">
                       <div class="stat-icon mb-3">
                         <span class="badge bg-orange fs-1 p-3 rounded-circle"></span>
@@ -120,35 +134,36 @@
                       </div>
                     </div>
                   </div>
-                  <div class="col-md-4">
-                    <div class="stat-card text-center p-4 rounded-3 bg-emerald bg-opacity-10 border border-emerald border-2">
-                      <div class="stat-icon mb-3">
-                        <span class="badge bg-emerald fs-1 p-3 rounded-circle"></span>
+                  <div class="col-md-3">
+                  <div class="stat-card text-center p-4 rounded-3 bg-orange bg-opacity-10 border border-orange border-2">
+                  <div class="stat-icon mb-3">
+                        <span class="badge bg-orange fs-1 p-3 rounded-circle"></span>
                       </div>
                       <div class="stat-number mb-2">
-                        <h2 class="text-emerald fw-bold mb-0"><?= count(array_filter($userHistory, function($ins) { return in_array(strtolower(trim($ins['statut'])), ['annulee', 'annulée', 'annule']); })) ?></h2>
+                        <h2 class="text-orange fw-bold mb-0"><?= count(array_filter($userHistory, function($ins) { return in_array(strtolower(trim($ins['statut'])), ['annulee', 'annulée', 'annule']); })) ?></h2>
                       </div>
                       <div class="stat-label">
-                        <h6 class="text-emerald fw-bold mb-1">Annulées</h6>
+                        <h6 class="text-orange fw-bold mb-1">Annulées</h6>
                         <small class="text-muted">Inscriptions annulées</small>
                       </div>
                     </div>
                   </div>
-                  <div class="col-md-4">
-                    <div class="stat-card text-center p-4 rounded-3 bg-purple bg-opacity-10 border border-purple border-2">
-                      <div class="stat-icon mb-3">
-                        <span class="badge bg-purple fs-1 p-3 rounded-circle"></span>
+                  <div class="col-md-3">
+                  <div class="stat-card text-center p-4 rounded-3 bg-orange bg-opacity-10 border border-orange border-2">
+                  <div class="stat-icon mb-3">
+                        <span class="badge bg-danger fs-1 p-3 rounded-circle"></span>
                       </div>
                       <div class="stat-number mb-2">
-                        <h2 class="text-purple fw-bold mb-0"><?= count($userHistory) ?></h2>
+                        <h2 class="text-orange fw-bold mb-0"><?= count(array_filter($userHistory, function($ins) { return in_array(strtolower(trim($ins['statut'])), ['refusee', 'refusée']); })) ?></h2>
                       </div>
                       <div class="stat-label">
-                        <h6 class="text-purple fw-bold mb-1">Total historique</h6>
-                        <small class="text-muted">Toutes les activités</small>
+                        <h6 class="text-orange fw-bold mb-1">Refusées</h6>
+                        <small class="text-muted">Inscriptions refusées</small>
                       </div>
                     </div>
                   </div>
                 </div>
+              
                 <hr class="my-4">
                 <div class="row">
                   <div class="col-12">
@@ -212,17 +227,32 @@
                                   </span>
                                 </td>
                                 <td class="py-2 px-3">
-                                  <span class="badge bg-<?= in_array(strtolower(trim($ins['statut'])), ['terminee', 'terminée', 'termine']) ? 'success' : (in_array(strtolower(trim($ins['statut'])), ['refusée', 'refusee']) ? 'danger' : 'secondary') ?> fs-6 px-2 py-1 rounded-pill shadow-sm">
+                                  <span class="badge bg-<?php 
+                                    $status = strtolower(trim($ins['statut']));
+                                    if (in_array($status, ['validee', 'validée', 'confirmee'])) {
+                                        echo 'success';
+                                    } elseif (in_array($status, ['terminee', 'terminée', 'termine'])) {
+                                        echo 'warning';
+                                    } elseif (in_array($status, ['annulee', 'annulée', 'annule'])) {
+                                        echo 'secondary';
+                                    } elseif (in_array($status, ['refusée', 'refusee'])) {
+                                        echo 'danger';
+                                    } else {
+                                        echo 'info';
+                                    }
+                                  ?> fs-6 px-2 py-1 rounded-pill shadow-sm">
                                     <?php 
                                     $exactStatus = $ins['statut'];
-                                    if (in_array(strtolower(trim($exactStatus)), ['terminee', 'terminée', 'termine'])) {
-                                        echo '✅ Terminée';
+                                    if (in_array(strtolower(trim($exactStatus)), ['validee', 'validée', 'confirmee'])) {
+                                        echo ' Validée';
+                                    } elseif (in_array(strtolower(trim($exactStatus)), ['terminee', 'terminée', 'termine'])) {
+                                        echo 'Terminée';
                                     } elseif (in_array(strtolower(trim($exactStatus)), ['annulee', 'annulée', 'annule'])) {
-                                        echo '🚫 Annulée';
+                                        echo ' Annulée';
                                     } elseif (in_array(strtolower(trim($exactStatus)), ['refusée', 'refusee'])) {
-                                        echo '❌ Refusée';
+                                        echo ' Refusée';
                                     } else {
-                                        echo '❓ ' . ucfirst($exactStatus);
+                                        echo ' ' . ucfirst($exactStatus);
                                     }
                                     ?>
                                   </span>
@@ -243,7 +273,7 @@
                         <div class="empty-state">
                           <i class="icon-inbox text-muted mb-3" style="font-size: 4rem;"></i>
                           <h5 class="text-muted mb-2">Aucun historique disponible</h5>
-                          <p class="text-muted mb-4">Vous n'avez pas encore d'inscriptions terminées ou annulées</p>
+                          <p class="text-muted mb-4">Vous n'avez pas encore d'inscriptions dans votre historique</p>
                           <a href="index.php?controller=front&action=activities" class="btn btn-primary">
                             <i class="icon-plus-circle me-2"></i>Découvrir les activités
                           </a>
@@ -317,3 +347,4 @@
   </div>
 </body>
 </html>
+

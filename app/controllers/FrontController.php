@@ -79,10 +79,10 @@ class FrontController {
 		$isExpired = $activityModel->isActivityExpired($activityId);
 		
 		// Vérifier si l'utilisateur est déjà inscrit
-		$isSubscribed = $inscriptionModel->existsForUserActivity($userId, $activityId, ['en_attente', 'confirmee']);
+		$isSubscribed = $inscriptionModel->hasActiveInscription($userId, $activityId);
 		
 		// Compter les inscriptions pour cette activité
-		$inscriptionCount = $inscriptionModel->countForActivity($activityId, ['en_attente', 'confirmee']);
+		$inscriptionCount = $inscriptionModel->countActiveInscriptions($activityId);
 		$availableSpots = $activity['capacite'] - $inscriptionCount;
 		
 		require __DIR__ . '/../views/front/activity.php';
@@ -131,15 +131,15 @@ class FrontController {
 		}
 		
 		// Vérifier la capacité
-		$inscriptionCount = $inscriptionModel->countForActivity($activityId, ['en_attente', 'confirmee']);
+		$inscriptionCount = $inscriptionModel->countActiveInscriptions($activityId);
 		if ($inscriptionCount >= $activity['capacite']) {
 			Flash::add('danger', 'Cette activité est complète');
 			header('Location: index.php?controller=front&action=activity&id=' . $activityId);
 			exit;
 		}
 		
-		// Vérifier si l'utilisateur est déjà inscrit
-		if ($inscriptionModel->existsForUserActivity($userId, $activityId, ['en_attente', 'confirmee'])) {
+		// Vérifier si l'utilisateur peut s'inscrire
+		if (!$inscriptionModel->canUserSubscribe($userId, $activityId)) {
 			Flash::add('danger', 'Vous êtes déjà inscrit à cette activité');
 			header('Location: index.php?controller=front&action=activity&id=' . $activityId);
 			exit;
