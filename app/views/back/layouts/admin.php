@@ -32,10 +32,10 @@
   <header id="header" class="header dark-background d-flex flex-column">
     <i class="header-toggle d-xl-none bi bi-list"></i>
 
- <br>
- </br>
+    <br>
+    </br>
 
-    <a href="index.php" class="logo d-flex align-items-center justify-content-center">
+    <a href="index.php?controller=dashboard&action=index" class="logo d-flex align-items-center justify-content-center">
       <h1 class="sitename">Admin</h1>
     </a>
 
@@ -46,10 +46,11 @@
       <a href="#" class="google-plus"><i class="bi bi-skype"></i></a>
       <a href="#" class="linkedin"><i class="bi bi-linkedin"></i></a>
     </div>
- <br>
- </br>
+    <br>
+    </br>
     <nav id="navmenu" class="navmenu">
       <ul>
+        <li><a href="index.php?controller=dashboard&action=index" class="active"><i class="bi bi-speedometer2 navicon"></i> Tableau de Bord</a></li>
         <?php $role = $_SESSION['user']['role'] ?? null; $roleNorm = is_string($role) ? strtolower($role) : $role; $userId = $_SESSION['user']['id'] ?? null; ?>
         <?php if ($roleNorm === 'admin'): ?>
           <li><a href="index.php?controller=user&action=index"><i class="bi bi-people navicon"></i> Utilisateurs</a></li>
@@ -80,51 +81,26 @@
 
   <main class="main">
     <section class="section light-background">
-      <div class="container" data-aos="fade-up">
-        <?php 
-          require_once __DIR__ . '/../../../../core/Flash.php';
-          $flashes = class_exists('Flash') ? Flash::consumeAll() : [];
-          foreach ($flashes as $flash):
-            $type = in_array($flash['type'], ['primary','secondary','success','danger','warning','info','light','dark']) ? $flash['type'] : 'info';
-        ?>
-            <div class="alert alert-<?= htmlspecialchars($type) ?> alert-dismissible fade show" role="alert">
-              <?= htmlspecialchars($flash['message']) ?>
-              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        <?php endforeach; ?>
+      <?php 
+        require_once __DIR__ . '/../../../../core/Flash.php';
+        $flashes = class_exists('Flash') ? Flash::consumeAll() : [];
+        foreach ($flashes as $flash):
+          $type = in_array($flash['type'], ['primary','secondary','success','danger','warning','info','light','dark']) ? $flash['type'] : 'info';
+      ?>
+          <div class="alert alert-<?= htmlspecialchars($type) ?> alert-dismissible fade show" role="alert">
+            <?= htmlspecialchars($flash['message']) ?>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+      <?php endforeach; ?>
 
-        <?php echo isset($content) ? $content : ''; ?>
-      </div>
+      <?php echo isset($content) ? $content : ''; ?>
     </section>
   </main>
 
-  <footer id="footer" class="footer position-relative light-background">
-    <div class="container">
-      <div class="copyright text-center ">
-        <p>© <span>Copyright</span> <strong class="px-1 sitename">iPortfolio</strong> <span>All Rights Reserved</span></p>
-      </div>
-      <div class="credits">
-        Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a> Distributed by <a href="https://themewagon.com">ThemeWagon</a>
-      </div>
-    </div>
-  </footer>
-
-  <!-- Scroll Top -->
-  <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
-
-  <!-- Preloader -->
-  <div id="preloader"></div>
-
   <!-- Vendor JS Files -->
   <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-  <script src="assets/vendor/php-email-form/validate.js"></script>
   <script src="assets/vendor/aos/aos.js"></script>
-  <script src="assets/vendor/typed.js/typed.umd.js"></script>
-  <script src="assets/vendor/purecounter/purecounter_vanilla.js"></script>
-  <script src="assets/vendor/waypoints/noframework.waypoints.js"></script>
   <script src="assets/vendor/glightbox/js/glightbox.min.js"></script>
-  <script src="assets/vendor/imagesloaded/imagesloaded.pkgd.min.js"></script>
-  <script src="assets/vendor/isotope-layout/isotope.pkgd.min.js"></script>
   <script src="assets/vendor/swiper/swiper-bundle.min.js"></script>
 
   <!-- Main JS File -->
