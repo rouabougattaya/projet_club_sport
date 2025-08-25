@@ -66,7 +66,7 @@ class AuthController
                     Flash::add('success', 'Connexion réussie. Bienvenue !');
                     $role = strtolower((string)($user['role'] ?? ''));
                     if (in_array($role, ['admin', 'entraineur'], true)) {
-                        header('Location: index.php?controller=user&action=index');
+                        header('Location: index.php?controller=dashboard&action=index');
                     } else {
                         header('Location: index.php?controller=front&action=home');
                     }

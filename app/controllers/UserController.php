@@ -47,8 +47,8 @@ class UserController {
             $this->render('back/users/index', ['users' => $users]);
             return;
         }
-        // Non-admin: aller directement sur l'édition de mon profil
-        header('Location: index.php?controller=user&action=edit&id=' . urlencode((string)$sessionUser['id']));
+        // Non-admin: rediriger vers le dashboard
+        header('Location: index.php?controller=dashboard&action=index');
         exit;
     }
 

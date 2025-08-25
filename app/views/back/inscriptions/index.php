@@ -6,7 +6,7 @@
         <?php $isAdmin = !empty($isAdmin) && $isAdmin; ?>
         <div>
           <h2 class="h3 mb-1 text-dark fw-bold">
-            <i class="bi bi-person-check-fill text-primary me-2"></i>
+            <i class="bi bi-person-check-fill text-blue-violet me-2"></i>
             <?= $isAdmin ? 'Gestion des Inscriptions' : 'Mes Inscriptions' ?>
           </h2>
           <p class="text-muted mb-0">
@@ -21,7 +21,7 @@
   <?php if ($isAdmin): ?>
     <div class="row mb-4">
       <div class="col-xl-3 col-md-6 mb-3">
-        <div class="card border-0 bg-primary bg-gradient text-white shadow-sm h-100">
+        <div class="card border-0 bg-gradient-blue-violet text-white shadow-sm h-100">
           <div class="card-body">
             <div class="d-flex justify-content-between">
               <div>
@@ -36,7 +36,7 @@
         </div>
       </div>
       <div class="col-xl-3 col-md-6 mb-3">
-        <div class="card border-0 bg-warning bg-gradient text-white shadow-sm h-100">
+        <div class="card border-0 bg-gradient-indigo text-white shadow-sm h-100">
           <div class="card-body">
             <div class="d-flex justify-content-between">
               <div>
@@ -61,7 +61,7 @@
         </div>
       </div>
       <div class="col-xl-3 col-md-6 mb-3">
-        <div class="card border-0 bg-success bg-gradient text-white shadow-sm h-100">
+        <div class="card border-0 bg-gradient-purple text-white shadow-sm h-100">
           <div class="card-body">
             <div class="d-flex justify-content-between">
               <div>
@@ -86,7 +86,7 @@
         </div>
       </div>
       <div class="col-xl-3 col-md-6 mb-3">
-        <div class="card border-0 bg-danger bg-gradient text-white shadow-sm h-100">
+        <div class="card border-0 bg-gradient-violet text-white shadow-sm h-100">
 	<div class="card-body">
             <div class="d-flex justify-content-between">
               <div>
@@ -104,7 +104,7 @@
                 <p class="mb-0 opacity-75">Refusées</p>
               </div>
               <div class="align-self-center">
-                <i class="bi bi-x-circle-fill fs-1 opacity-75"></i>
+                <i class="bi bi-x-circle fs-1 opacity-75"></i>
               </div>
             </div>
           </div>
@@ -173,7 +173,7 @@
               <tr class="inscription-row">
                 <td class="px-2 py-3">
                   <div class="d-flex align-items-center">
-                    <div class="activity-icon bg-primary bg-gradient text-white rounded-circle d-flex align-items-center justify-content-center me-2">
+                    <div class="activity-icon activity-icon-inscription">
                       <i class="bi bi-calendar-event-fill"></i>
                     </div>
                     <div>
@@ -185,7 +185,7 @@
                 </td>
                 <td class="px-2 py-3">
                   <div class="d-flex align-items-center">
-                    <div class="user-avatar bg-info bg-opacity-10 text-info rounded-circle d-flex align-items-center justify-content-center me-2">
+                    <div class="user-avatar user-avatar-adherent">
                       <i class="bi bi-person-fill"></i>
                     </div>
                     <span class="fw-medium text-dark" title="<?= htmlspecialchars(trim(($insc['user_prenom'] ?? '') . ' ' . ($insc['user_nom'] ?? ''))) ?>">
@@ -217,25 +217,25 @@
                 <td class="px-2 py-3 text-center">
 								<?php if ($s === 'en_attente'): ?>
                     <div class="btn-group" role="group">
-                      <a class="btn btn-sm btn-success" href="index.php?controller=inscriptions&action=validate&id=<?= urlencode((string)$insc['id']) ?>" title="Valider">
+                      <a class="btn btn-sm btn-blue-violet" href="index.php?controller=inscriptions&action=validate&id=<?= urlencode((string)$insc['id']) ?>" title="Valider">
                         <i class="bi bi-check-lg"></i>
                       </a>
-                      <a class="btn btn-sm btn-outline-danger" href="index.php?controller=inscriptions&action=refuse&id=<?= urlencode((string)$insc['id']) ?>" onclick="return confirm('Refuser cette inscription ?');" title="Refuser">
+                      <a class="btn btn-sm btn-outline-purple" href="index.php?controller=inscriptions&action=refuse&id=<?= urlencode((string)$insc['id']) ?>" onclick="return confirm('Refuser cette inscription ?');" title="Refuser">
                         <i class="bi bi-x-lg"></i>
                       </a>
                     </div>
 								<?php elseif ($s === 'validée'): ?>
                     <div class="btn-group" role="group">
-                      <a class="btn btn-sm btn-outline-danger" href="index.php?controller=inscriptions&action=refuse&id=<?= urlencode((string)$insc['id']) ?>" onclick="return confirm('Refuser cette inscription ?');" title="Refuser">
+                      <a class="btn btn-sm btn-outline-purple" href="index.php?controller=inscriptions&action=refuse&id=<?= urlencode((string)$insc['id']) ?>" onclick="return confirm('Refuser cette inscription ?');" title="Refuser">
                         <i class="bi bi-x-lg"></i>
                       </a>
                     </div>
 								<?php elseif ($s === 'refusée' || $s === 'annulée' || $s === 'terminée'): ?>
-                    <button class="btn btn-sm btn-secondary" disabled title="Aucune action disponible">
+                    <button class="btn btn-sm btn-outline-blue-violet" disabled title="Aucune action disponible">
                       <i class="bi bi-dash-lg"></i>
                     </button>
 								<?php else: ?>
-                    <button class="btn btn-sm btn-secondary" disabled title="Aucune action disponible">
+                    <button class="btn btn-sm btn-outline-blue-violet" disabled title="Aucune action disponible">
                       <i class="bi bi-dash-lg"></i>
                     </button>
 								<?php endif; ?>
@@ -257,11 +257,31 @@
   flex-shrink: 0;
 }
 
+.activity-icon-inscription {
+  background: linear-gradient(135deg, var(--blue-violet) 0%, var(--indigo) 100%);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 0.5rem;
+}
+
 .user-avatar {
   width: 28px;
   height: 28px;
   font-size: 12px;
   flex-shrink: 0;
+}
+
+.user-avatar-adherent {
+  background-color: rgba(79, 70, 229, 0.1);
+  color: var(--blue-violet);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 0.5rem;
 }
 
 .inscription-row:hover {
@@ -308,33 +328,33 @@
 }
 
 .badge-status.badge-success {
-  background-color: rgba(25, 135, 84, 0.1);
-  color: #198754;
-  border: 1px solid rgba(25, 135, 84, 0.3);
+  background-color: rgba(79, 70, 229, 0.1);
+  color: var(--blue-violet);
+  border: 1px solid rgba(79, 70, 229, 0.3);
 }
 
 .badge-status.badge-danger {
-  background-color: rgba(220, 53, 69, 0.1);
-  color: #dc3545;
-  border: 1px solid rgba(220, 53, 69, 0.3);
+  background-color: rgba(139, 92, 246, 0.1);
+  color: var(--purple);
+  border: 1px solid rgba(139, 92, 246, 0.3);
 }
 
 .badge-status.badge-warning {
-  background-color: rgba(255, 193, 7, 0.1);
-  color: #ffc107;
-  border: 1px solid rgba(255, 193, 7, 0.3);
+  background-color: rgba(99, 102, 241, 0.1);
+  color: var(--indigo);
+  border: 1px solid rgba(99, 102, 241, 0.3);
 }
 
 .badge-status.badge-secondary {
-  background-color: rgba(108, 117, 125, 0.1);
-  color: #6c757d;
-  border: 1px solid rgba(108, 117, 125, 0.3);
+  background-color: rgba(124, 58, 237, 0.1);
+  color: var(--violet);
+  border: 1px solid rgba(124, 58, 237, 0.3);
 }
 
 .badge-status.badge-dark {
-  background-color: rgba(33, 37, 41, 0.1);
-  color: #212529;
-  border: 1px solid rgba(33, 37, 41, 0.3);
+  background-color: rgba(79, 70, 229, 0.2);
+  color: var(--blue-violet);
+  border: 1px solid rgba(79, 70, 229, 0.4);
 }
 
 .table th {
@@ -509,6 +529,106 @@
 .badge-status:hover {
   transform: scale(1.05);
   transition: transform 0.2s ease;
+}
+
+/* Nouvelles couleurs personnalisées - Dégradés Bleu-Violet */
+:root {
+  --blue-violet: #4f46e5;
+  --blue-violet-rgb: 79, 70, 229;
+  --indigo: #6366f1;
+  --indigo-rgb: 99, 102, 241;
+  --purple: #8b5cf6;
+  --purple-rgb: 139, 92, 246;
+  --violet: #7c3aed;
+  --violet-rgb: 124, 58, 237;
+  --blue: #3b82f6;
+  --blue-rgb: 59, 130, 246;
+}
+
+/* Classes de couleurs personnalisées */
+.btn-blue-violet {
+  background-color: var(--blue-violet);
+  border-color: var(--blue-violet);
+  color: white;
+}
+
+.btn-blue-violet:hover {
+  background-color: #4338ca;
+  border-color: #4338ca;
+  color: white;
+}
+
+.btn-outline-blue-violet {
+  color: var(--blue-violet);
+  border-color: var(--blue-violet);
+}
+
+.btn-outline-blue-violet:hover {
+  background-color: var(--blue-violet);
+  border-color: var(--blue-violet);
+  color: white;
+}
+
+.btn-outline-purple {
+  color: var(--purple);
+  border-color: var(--purple);
+}
+
+.btn-outline-purple:hover {
+  background-color: var(--purple);
+  border-color: var(--purple);
+  color: white;
+}
+
+.text-blue-violet {
+  color: var(--blue-violet) !important;
+}
+
+.text-indigo {
+  color: var(--indigo) !important;
+}
+
+.text-purple {
+  color: var(--purple) !important;
+}
+
+.text-violet {
+  color: var(--violet) !important;
+}
+
+.bg-blue-violet {
+  background-color: var(--blue-violet) !important;
+}
+
+/* Dégradés Bleu-Violet */
+.bg-gradient-blue-violet {
+  background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);
+}
+
+.bg-gradient-indigo {
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+}
+
+.bg-gradient-purple {
+  background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+}
+
+.bg-gradient-violet {
+  background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
+}
+
+/* Focus amélioré pour la recherche */
+#searchInput:focus {
+  border-color: var(--blue-violet);
+  box-shadow: 0 0 0 0.2rem rgba(79, 70, 229, 0.25);
+}
+
+.inscription-row:hover {
+  background-color: rgba(79, 70, 229, 0.05) !important;
+}
+
+.inscription-row:hover {
+  background-color: rgba(79, 70, 229, 0.08) !important;
 }
 </style>
 

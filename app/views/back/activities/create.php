@@ -5,7 +5,7 @@
       <div class="d-flex justify-content-between align-items-center">
         <div>
           <h2 class="h3 mb-1 text-dark fw-bold">
-            <i class="bi bi-plus-circle-fill text-primary me-2"></i>
+            <i class="bi bi-plus-circle-fill text-blue-violet me-2"></i>
             Créer une Nouvelle Activité
           </h2>
           <p class="text-muted mb-0">
@@ -25,7 +25,7 @@
       <div class="card border-0 shadow-sm">
         <div class="card-header bg-white border-0 py-3">
           <h5 class="mb-0 text-dark fw-semibold">
-            <i class="bi bi-form-text me-2 text-primary"></i>
+            <i class="bi bi-form-text me-2 text-blue-violet"></i>
             Informations de l'Activité
           </h5>
         </div>
@@ -50,14 +50,14 @@
             <!-- Informations de base -->
             <div class="row g-4 mb-4">
               <div class="col-12">
-                <h6 class="text-primary fw-semibold mb-3">
+                <h6 class="text-blue-violet fw-semibold mb-3">
                   <i class="bi bi-info-circle me-2"></i>Informations Générales
                 </h6>
               </div>
               
               <div class="col-md-8">
                 <label class="form-label fw-semibold">
-                  <i class="bi bi-calendar-event me-1 text-primary"></i>
+                  <i class="bi bi-calendar-event me-1 text-blue-violet"></i>
                   Nom de l'Activité <span class="text-danger">*</span>
                 </label>
                 <input type="text" name="nom" class="form-control form-control-lg" 
@@ -68,7 +68,7 @@
               
               <div class="col-md-4">
                 <label class="form-label fw-semibold">
-                  <i class="bi bi-people me-1 text-primary"></i>
+                  <i class="bi bi-people me-1 text-blue-violet"></i>
                   Capacité Maximale
                 </label>
                 <input type="number" name="capacite" class="form-control form-control-lg" 
@@ -81,14 +81,14 @@
             <!-- Planning et horaires -->
             <div class="row g-4 mb-4">
               <div class="col-12">
-                <h6 class="text-primary fw-semibold mb-3">
+                <h6 class="text-blue-violet fw-semibold mb-3">
                   <i class="bi bi-clock me-2"></i>Planning et Horaires
                 </h6>
               </div>
               
               <div class="col-md-4">
                 <label class="form-label fw-semibold">
-                  <i class="bi bi-calendar-date me-1 text-primary"></i>
+                  <i class="bi bi-calendar-date me-1 text-blue-violet"></i>
                   Date de l'Activité
                 </label>
                 <input type="date" name="date_activite" class="form-control form-control-lg" 
@@ -303,8 +303,90 @@
 
 /* Hover effects pour les sections */
 .row:hover .col-12 h6 {
-  color: var(--bs-primary) !important;
+  color: var(--blue-violet) !important;
   transition: color 0.3s ease;
+}
+
+/* Nouvelles couleurs personnalisées - Dégradés Bleu-Violet */
+:root {
+  --blue-violet: #4f46e5;
+  --blue-violet-rgb: 79, 70, 229;
+  --indigo: #6366f1;
+  --indigo-rgb: 99, 102, 241;
+  --purple: #8b5cf6;
+  --purple-rgb: 139, 92, 246;
+  --violet: #7c3aed;
+  --violet-rgb: 124, 58, 237;
+  --blue: #3b82f6;
+  --blue-rgb: 59, 130, 246;
+}
+
+/* Classes de couleurs personnalisées */
+.btn-blue-violet {
+  background-color: var(--blue-violet);
+  border-color: var(--blue-violet);
+  color: white;
+}
+
+.btn-blue-violet:hover {
+  background-color: #4338ca;
+  border-color: #4338ca;
+  color: white;
+}
+
+.btn-outline-blue-violet {
+  color: var(--blue-violet);
+  border-color: var(--blue-violet);
+}
+
+.btn-outline-blue-violet:hover {
+  background-color: var(--blue-violet);
+  border-color: var(--blue-violet);
+  color: white;
+}
+
+.text-blue-violet {
+  color: var(--blue-violet) !important;
+}
+
+.text-indigo {
+  color: var(--indigo) !important;
+}
+
+.text-purple {
+  color: var(--purple) !important;
+}
+
+.text-violet {
+  color: var(--violet) !important;
+}
+
+.bg-blue-violet {
+  background-color: var(--blue-violet) !important;
+}
+
+/* Dégradés Bleu-Violet */
+.bg-gradient-blue-violet {
+  background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);
+}
+
+.bg-gradient-indigo {
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+}
+
+.bg-gradient-purple {
+  background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+}
+
+.bg-gradient-violet {
+  background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
+}
+
+/* Focus amélioré pour les champs */
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--blue-violet);
+  box-shadow: 0 0 0 0.2rem rgba(79, 70, 229, 0.25);
 }
 </style>
 

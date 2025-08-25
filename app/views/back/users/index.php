@@ -6,7 +6,7 @@
         <?php $isAdmin = !empty($_SESSION['user']) && (($_SESSION['user']['role'] ?? null) === 'admin'); ?>
         <div>
           <h2 class="h3 mb-1 text-dark fw-bold">
-            <i class="bi bi-people-fill text-primary me-2"></i>
+            <i class="bi bi-people-fill text-blue-violet me-2"></i>
             <?= $isAdmin ? 'Gestion des Utilisateurs' : 'Mon Profil' ?>
           </h2>
           <p class="text-muted mb-0">
@@ -14,7 +14,7 @@
           </p>
         </div>
         <?php if (!empty($_SESSION['user']) && ($_SESSION['user']['role'] ?? null) === 'admin'): ?>
-          <a href="index.php?controller=user&action=create" class="btn btn-primary btn-lg shadow-sm">
+          <a href="index.php?controller=user&action=create" class="btn btn-blue-violet btn-lg shadow-sm">
             <i class="bi bi-person-plus-fill me-2"></i>
             Ajouter un Utilisateur
           </a>
@@ -27,7 +27,7 @@
   <?php if (!empty($_SESSION['user']) && ($_SESSION['user']['role'] ?? null) === 'admin'): ?>
     <div class="row mb-4">
       <div class="col-xl-3 col-md-6 mb-3">
-        <div class="card border-0 bg-primary bg-gradient text-white shadow-sm h-100">
+        <div class="card border-0 bg-gradient-blue-violet text-white shadow-sm h-100">
           <div class="card-body">
             <div class="d-flex justify-content-between">
               <div>
@@ -42,7 +42,7 @@
         </div>
       </div>
       <div class="col-xl-3 col-md-6 mb-3">
-        <div class="card border-0 bg-success bg-gradient text-white shadow-sm h-100">
+        <div class="card border-0 bg-gradient-indigo text-white shadow-sm h-100">
           <div class="card-body">
             <div class="d-flex justify-content-between">
               <div>
@@ -57,7 +57,7 @@
         </div>
       </div>
       <div class="col-xl-3 col-md-6 mb-3">
-        <div class="card border-0 bg-info bg-gradient text-white shadow-sm h-100">
+        <div class="card border-0 bg-gradient-purple text-white shadow-sm h-100">
           <div class="card-body">
             <div class="d-flex justify-content-between">
               <div>
@@ -72,7 +72,7 @@
         </div>
       </div>
       <div class="col-xl-3 col-md-6 mb-3">
-        <div class="card border-0 bg-warning bg-gradient text-white shadow-sm h-100">
+        <div class="card border-0 bg-gradient-violet text-white shadow-sm h-100">
           <div class="card-body">
             <div class="d-flex justify-content-between">
               <div>
@@ -90,11 +90,11 @@
   <?php endif; ?>
 
   <!-- Tableau des utilisateurs -->
-  <div class="card border-0 shadow-sm">
+  <div class="card border-0 shadow-lg">
     <div class="card-header bg-white border-0 py-3">
       <div class="d-flex justify-content-between align-items-center">
         <h5 class="mb-0 text-dark fw-semibold">
-          <i class="bi bi-table me-2 text-primary"></i>
+          <i class="bi bi-table me-2 text-blue-violet"></i>
           Liste des Utilisateurs
         </h5>
         <div class="d-flex gap-2">
@@ -117,31 +117,31 @@
           <thead class="table-light">
             <tr>
               <th scope="col" class="border-0 px-2 py-3 text-nowrap" style="width: 10%;">
-                <i class="bi bi-person-badge me-1 text-primary"></i>Nom
+                <i class="bi bi-person-badge me-1 text-blue-violet"></i>Nom
               </th>
               <th scope="col" class="border-0 px-2 py-3 text-nowrap" style="width: 10%;">
-                <i class="bi bi-person me-1 text-primary"></i>Prénom
+                <i class="bi bi-person me-1 text-blue-violet"></i>Prénom
               </th>
               <th scope="col" class="border-0 px-2 py-3 text-nowrap" style="width: 8%;">
-                <i class="bi bi-card-text me-1 text-primary"></i>CIN
+                <i class="bi bi-card-text me-1 text-blue-violet"></i>CIN
               </th>
               <th scope="col" class="border-0 px-2 py-3 text-nowrap" style="width: 12%;">
-                <i class="bi bi-gender-ambiguous me-1 text-primary"></i>Genre
+                <i class="bi bi-gender-ambiguous me-1 text-blue-violet"></i>Genre
               </th>
               <th scope="col" class="border-0 px-2 py-3 text-nowrap" style="width: 16%;">
-                <i class="bi bi-geo-alt me-1 text-primary"></i>Adresse
+                <i class="bi bi-geo-alt me-1 text-blue-violet"></i>Adresse
               </th>
               <th scope="col" class="border-0 px-2 py-3 text-nowrap" style="width: 12%;">
-                <i class="bi bi-telephone me-1 text-primary"></i>Téléphone
+                <i class="bi bi-telephone me-1 text-blue-violet"></i>Téléphone
               </th>
               <th scope="col" class="border-0 px-2 py-3 text-nowrap" style="width: 18%;">
-                <i class="bi bi-envelope me-1 text-primary"></i>Email
+                <i class="bi bi-envelope me-1 text-blue-violet"></i>Email
               </th>
               <th scope="col" class="border-0 px-2 py-3 text-nowrap" style="width: 12%;">
-                <i class="bi bi-shield me-1 text-primary"></i>Rôle
+                <i class="bi bi-shield me-1 text-blue-violet"></i>Rôle
               </th>
               <th scope="col" class="border-0 px-2 py-3 text-center text-nowrap" style="width: 2%;">
-                <i class="bi bi-gear me-1 text-primary"></i>Actions
+                <i class="bi bi-gear me-1 text-blue-violet"></i>Actions
               </th>
             </tr>
           </thead>
@@ -154,7 +154,7 @@
                     <h6 class="mb-2">Aucun utilisateur trouvé</h6>
                     <p class="mb-3">Commencez par ajouter votre premier utilisateur au système.</p>
                     <?php if (!empty($_SESSION['user']) && ($_SESSION['user']['role'] ?? null) === 'admin'): ?>
-                      <a class="btn btn-primary" href="index.php?controller=user&action=create">
+                      <a class="btn btn-blue-violet" href="index.php?controller=user&action=create">
                         <i class="bi bi-plus-lg me-2"></i>Ajouter le Premier Utilisateur
                       </a>
                     <?php endif; ?>
@@ -166,7 +166,7 @@
               <tr class="user-row">
                 <td class="px-2 py-3">
                   <div class="d-flex align-items-center">
-                    <div class="avatar-sm bg-primary bg-gradient text-white rounded-circle d-flex align-items-center justify-content-center me-2">
+                    <div class="avatar-sm bg-blue-violet bg-gradient text-white rounded-circle d-flex align-items-center justify-content-center me-2">
                       <span class="fw-semibold"><?= strtoupper(substr($user['nom'], 0, 1)) ?></span>
                     </div>
                     <span class="fw-semibold text-dark text-truncate" title="<?= htmlspecialchars($user['nom']) ?>"><?= htmlspecialchars($user['nom']) ?></span>
@@ -195,7 +195,7 @@
                 <td class="px-2 py-3">
                   <?php if (!empty($user['adresse'])): ?>
                     <span class="text-muted text-truncate d-block" title="<?= htmlspecialchars($user['adresse']) ?>">
-                      <i class="bi bi-geo-alt-fill text-primary me-1"></i>
+                      <i class="bi bi-geo-alt-fill text-blue-violet me-1"></i>
                       <?= htmlspecialchars($user['adresse']) ?>
                     </span>
                   <?php else: ?>
@@ -205,7 +205,7 @@
                 <td class="px-2 py-3">
                   <?php if (!empty($user['telephone'])): ?>
                     <span class="d-flex align-items-center">
-                      <i class="bi bi-telephone-fill text-success me-1"></i>
+                      <i class="bi bi-telephone-fill text-indigo me-1"></i>
                       <span class="text-truncate" title="<?= htmlspecialchars($user['telephone']) ?>"><?= htmlspecialchars($user['telephone']) ?></span>
                     </span>
                   <?php else: ?>
@@ -214,7 +214,7 @@
                 </td>
                 <td class="px-2 py-3">
                   <span class="d-flex align-items-center">
-                    <i class="bi bi-envelope-fill text-info me-1"></i>
+                    <i class="bi bi-envelope-fill text-purple me-1"></i>
                     <span class="text-truncate" title="<?= htmlspecialchars($user['email']) ?>"><?= htmlspecialchars($user['email']) ?></span>
                   </span>
                 </td>
@@ -227,7 +227,7 @@
                 <td class="px-2 py-3 text-center">
                   <div class="btn-group" role="group">
                     <a href="index.php?controller=user&action=edit&id=<?= urlencode($user['id']) ?>"
-                       class="btn btn-sm btn-outline-primary"
+                       class="btn btn-sm btn-outline-blue-violet"
                        title="Modifier">
                       <i class="bi bi-pencil-square"></i>
                     </a>
@@ -251,6 +251,81 @@
 </div>
 
 <style>
+/* Nouvelles couleurs personnalisées - Dégradés Bleu-Violet */
+:root {
+  --blue-violet: #4f46e5;
+  --blue-violet-rgb: 79, 70, 229;
+  --indigo: #6366f1;
+  --indigo-rgb: 99, 102, 241;
+  --purple: #8b5cf6;
+  --purple-rgb: 139, 92, 246;
+  --violet: #7c3aed;
+  --violet-rgb: 124, 58, 237;
+  --blue: #3b82f6;
+  --blue-rgb: 59, 130, 246;
+}
+
+/* Classes de couleurs personnalisées */
+.btn-blue-violet {
+  background-color: var(--blue-violet);
+  border-color: var(--blue-violet);
+  color: white;
+}
+
+.btn-blue-violet:hover {
+  background-color: #4338ca;
+  border-color: #4338ca;
+  color: white;
+}
+
+.btn-outline-blue-violet {
+  color: var(--blue-violet);
+  border-color: var(--blue-violet);
+}
+
+.btn-outline-blue-violet:hover {
+  background-color: var(--blue-violet);
+  border-color: var(--blue-violet);
+  color: white;
+}
+
+.text-blue-violet {
+  color: var(--blue-violet) !important;
+}
+
+.text-indigo {
+  color: var(--indigo) !important;
+}
+
+.text-purple {
+  color: var(--purple) !important;
+}
+
+.text-violet {
+  color: var(--violet) !important;
+}
+
+.bg-blue-violet {
+  background-color: var(--blue-violet) !important;
+}
+
+/* Dégradés Bleu-Violet */
+.bg-gradient-blue-violet {
+  background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);
+}
+
+.bg-gradient-indigo {
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+}
+
+.bg-gradient-purple {
+  background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+}
+
+.bg-gradient-violet {
+  background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
+}
+
 .avatar-sm {
   width: 32px;
   height: 32px;
@@ -259,13 +334,14 @@
 }
 
 .user-row:hover {
-  background-color: rgba(13, 110, 253, 0.05) !important;
+  background-color: rgba(79, 70, 229, 0.05) !important;
   transform: translateY(-1px);
   transition: all 0.2s ease;
 }
 
 .card {
   transition: all 0.3s ease;
+  border-radius: 12px;
 }
 
 .card:hover {
@@ -275,6 +351,7 @@
 
 .btn {
   transition: all 0.2s ease;
+  border-radius: 8px;
 }
 
 .btn:hover {
@@ -285,6 +362,7 @@
   font-size: 0.75rem;
   padding: 0.4em 0.6em;
   max-width: 100%;
+  border-radius: 8px;
 }
 
 /* Badges optimisés pour Genre et Rôle */
@@ -302,15 +380,15 @@
 }
 
 .badge-genre.badge-male {
-  background-color: rgba(13, 110, 253, 0.1);
-  color: #0d6efd;
-  border: 1px solid rgba(13, 110, 253, 0.3);
+  background-color: rgba(79, 70, 229, 0.1);
+  color: var(--blue-violet);
+  border: 1px solid rgba(79, 70, 229, 0.3);
 }
 
 .badge-genre.badge-female {
-  background-color: rgba(220, 53, 69, 0.1);
-  color: #dc3545;
-  border: 1px solid rgba(220, 53, 69, 0.3);
+  background-color: rgba(139, 92, 246, 0.1);
+  color: var(--purple);
+  border: 1px solid rgba(139, 92, 246, 0.3);
 }
 
 .badge-role {
@@ -327,21 +405,21 @@
 }
 
 .badge-role.badge-admin {
-  background-color: rgba(220, 53, 69, 0.1);
-  color: #dc3545;
-  border: 1px solid rgba(220, 53, 69, 0.3);
+  background-color: rgba(124, 58, 237, 0.1);
+  color: var(--violet);
+  border: 1px solid rgba(124, 58, 237, 0.3);
 }
 
 .badge-role.badge-entraineur {
-  background-color: rgba(13, 110, 253, 0.1);
-  color: #0d6efd;
-  border: 1px solid rgba(13, 110, 253, 0.3);
+  background-color: rgba(79, 70, 229, 0.1);
+  color: var(--blue-violet);
+  border: 1px solid rgba(79, 70, 229, 0.3);
 }
 
 .badge-role.badge-adherent {
-  background-color: rgba(25, 135, 84, 0.1);
-  color: #198754;
-  border: 1px solid rgba(25, 135, 84, 0.3);
+  background-color: rgba(99, 102, 241, 0.1);
+  color: var(--indigo);
+  border: 1px solid rgba(99, 102, 241, 0.3);
 }
 
 .table th {
@@ -361,10 +439,6 @@
 
 .table tbody tr:last-child td {
   border-bottom: none;
-}
-
-.bg-gradient {
-  background-image: linear-gradient(135deg, var(--bs-primary) 0%, var(--bs-primary-rgb) 100%);
 }
 
 /* Optimisation de la lisibilité sans scroll */
@@ -414,8 +488,8 @@
 
 /* Focus amélioré pour la recherche */
 #searchInput:focus {
-  border-color: var(--bs-primary);
-  box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+  border-color: var(--blue-violet);
+  box-shadow: 0 0 0 0.2rem rgba(79, 70, 229, 0.25);
 }
 
 .input-group-text {
@@ -434,7 +508,7 @@
 }
 
 .user-row:hover {
-  background-color: rgba(13, 110, 253, 0.08) !important;
+  background-color: rgba(79, 70, 229, 0.08) !important;
 }
 
 /* Optimisation pour les petits écrans */
@@ -656,4 +730,168 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
 });
+</script>
+
+</style>
+
+
+
+<script>
+
+document.addEventListener('DOMContentLoaded', function() {
+
+  const searchInput = document.getElementById('searchInput');
+
+  const clearSearchBtn = document.getElementById('clearSearch');
+
+  const userRows = document.querySelectorAll('.user-row');
+
+  const tableBody = document.querySelector('tbody');
+
+  
+  
+  // Fonction de recherche
+
+  function filterUsers(searchTerm) {
+
+    let hasResults = false;
+
+    
+    
+    userRows.forEach(row => {
+
+      const text = row.textContent.toLowerCase();
+
+      if (text.includes(searchTerm.toLowerCase())) {
+
+        row.style.display = '';
+
+        hasResults = true;
+
+      } else {
+
+        row.style.display = 'none';
+
+      }
+
+    });
+
+    
+    
+    // Afficher/masquer le message "aucun résultat"
+
+    const noResultsRow = tableBody.querySelector('tr:not(.user-row)');
+
+    if (noResultsRow) {
+
+      if (!hasResults && searchTerm.length > 0) {
+
+        // Créer un message "aucun résultat trouvé"
+
+        const newNoResultsRow = document.createElement('tr');
+
+        newNoResultsRow.innerHTML = `
+
+          <td colspan="9" class="text-center p-5">
+
+            <div class="text-muted">
+
+              <i class="bi bi-search fs-1 mb-3 d-block opacity-50"></i>
+
+              <h6 class="mb-2">Aucun résultat trouvé</h6>
+
+              <p class="mb-0">Aucun utilisateur ne correspond à votre recherche : "<strong>${searchTerm}</strong>"</p>
+
+            </div>
+
+          </td>
+
+        `;
+
+        tableBody.appendChild(newNoResultsRow);
+
+      } else if (hasResults) {
+
+        // Supprimer le message "aucun résultat"
+
+        const existingNoResults = tableBody.querySelector('tr:not(.user-row)');
+
+        if (existingNoResults) {
+
+          existingNoResults.remove();
+
+        }
+
+      }
+
+    }
+
+  }
+
+  
+  
+  // Écouter les changements dans la barre de recherche
+
+  searchInput.addEventListener('input', function() {
+
+    const searchTerm = this.value.trim();
+
+    filterUsers(searchTerm);
+
+    
+    
+    // Afficher/masquer le bouton de suppression
+
+    if (searchTerm.length > 0) {
+
+      clearSearchBtn.style.display = 'block';
+
+    } else {
+
+      clearSearchBtn.style.display = 'none';
+
+    }
+
+  });
+
+  
+  
+  // Bouton pour effacer la recherche
+
+  clearSearchBtn.addEventListener('click', function() {
+
+    searchInput.value = '';
+
+    searchInput.focus();
+
+    filterUsers('');
+
+    this.style.display = 'none';
+
+  });
+
+  
+  
+  // Masquer le bouton de suppression au chargement
+
+  clearSearchBtn.style.display = 'none';
+
+  
+  
+  // Recherche avec la touche Entrée
+
+  searchInput.addEventListener('keypress', function(e) {
+
+    if (e.key === 'Enter') {
+
+      e.preventDefault();
+
+      this.blur();
+
+    }
+
+  });
+
+});
+
 </script>

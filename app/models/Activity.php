@@ -122,6 +122,26 @@ class Activity {
 		]);
 	}
 
+	/**
+	 * Récupère plusieurs activités par leurs IDs
+	 */
+	public function getByIds(array $ids): array {
+		if (empty($ids)) {
+			return [];
+		}
+		
+		$placeholders = str_repeat('?,', count($ids) - 1) . '?';
+		$sql = "SELECT a.*, u.prenom AS coach_prenom, u.nom AS coach_nom
+				FROM activities a
+				LEFT JOIN users u ON u.id = a.id_entraineur
+				WHERE a.id IN ($placeholders)
+				ORDER BY a.date_activite DESC, a.heure_debut DESC, a.id DESC";
+		
+		$stmt = $this->pdo->prepare($sql);
+		$stmt->execute($ids);
+		return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+	}
+
 	public function delete(int $id): bool {
 		$stmt = $this->pdo->prepare("DELETE FROM activities WHERE id = ?");
 		return $stmt->execute([$id]);

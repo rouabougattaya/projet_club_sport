@@ -6,14 +6,14 @@
         <?php $isAdmin = !empty($isAdmin) && $isAdmin; ?>
         <div>
           <h2 class="h3 mb-1 text-dark fw-bold">
-            <i class="bi bi-calendar-event-fill text-primary me-2"></i>
+            <i class="bi bi-calendar-event-fill text-blue-violet me-2"></i>
             <?= $isAdmin ? 'Gestion des Activités' : 'Mes Activités' ?>
           </h2>
           <p class="text-muted mb-0">
             <?= $isAdmin ? 'Administration complète du planning des activités' : 'Gérez vos activités programmées' ?>
           </p>
         </div>
-        <a href="index.php?controller=activities&action=create" class="btn btn-primary btn-lg shadow-sm">
+        <a href="index.php?controller=activities&action=create" class="btn btn-blue-violet btn-lg shadow-sm">
           <i class="bi bi-plus-circle-fill me-2"></i>
           Nouvelle Activité
         </a>
@@ -23,9 +23,40 @@
 
   <!-- Statistiques rapides -->
   <?php if ($isAdmin): ?>
+    <?php
+      // Calculs des statistiques
+      $activeCount = 0;
+      $upcomingCount = 0;
+      $availableActivities = 0;
+      $now = new DateTime();
+      
+      foreach ($activities as $activity) {
+        // Activités actives
+        if (isset($activity['statut']) && trim($activity['statut']) === 'active') {
+          $activeCount++;
+        }
+        
+        // Activités à venir
+        if (!empty($activity['date_activite']) && !empty($activity['heure_debut'])) {
+          $activityStartTime = new DateTime($activity['date_activite'] . ' ' . $activity['heure_debut']);
+          if ($activityStartTime > $now) {
+            $upcomingCount++;
+          }
+        }
+        
+        // Activités disponibles
+        if (!empty($activity['capacite']) && (int)$activity['capacite'] > 0) {
+          $inscriptionsCount = (int)($activity['inscriptions_count'] ?? 0);
+          $capacity = (int)$activity['capacite'];
+          if ($inscriptionsCount < $capacity) {
+            $availableActivities++;
+          }
+        }
+      }
+    ?>
     <div class="row mb-4">
       <div class="col-xl-3 col-md-6 mb-3">
-        <div class="card border-0 bg-primary bg-gradient text-white shadow-sm h-100">
+        <div class="card border-0 bg-gradient-blue-violet text-white shadow-sm h-100">
           <div class="card-body">
             <div class="d-flex justify-content-between">
               <div>
@@ -33,96 +64,52 @@
                 <p class="mb-0 opacity-75">Total Activités</p>
               </div>
               <div class="align-self-center">
-                <i class="bi bi-calendar-event-fill fs-1 opacity-75"></i>
+                <i class="bi bi-calendar-event fs-1 opacity-75"></i>
               </div>
             </div>
           </div>
         </div>
       </div>
       <div class="col-xl-3 col-md-6 mb-3">
-        <div class="card border-0 bg-success bg-gradient text-white shadow-sm h-100">
+        <div class="card border-0 bg-gradient-indigo text-white shadow-sm h-100">
           <div class="card-body">
             <div class="d-flex justify-content-between">
               <div>
-                <h4 class="fw-bold mb-1">
-                  <?php
-                    $activeCount = 0;
-                    foreach ($activities as $activity) {
-                      if (isset($activity['statut']) && trim($activity['statut']) === 'active') {
-                        $activeCount++;
-                      }
-                    }
-                    echo $activeCount;
-                  ?>
-                </h4>
+                <h4 class="fw-bold mb-1"><?= $activeCount ?></h4>
                 <p class="mb-0 opacity-75">Activités Actives</p>
               </div>
               <div class="align-self-center">
-                <i class="bi bi-check-circle-fill fs-1 opacity-75"></i>
+                <i class="bi bi-check-circle fs-1 opacity-75"></i>
               </div>
             </div>
           </div>
         </div>
       </div>
       <div class="col-xl-3 col-md-6 mb-3">
-        <div class="card border-0 bg-info bg-gradient text-white shadow-sm h-100">
+        <div class="card border-0 bg-gradient-purple text-white shadow-sm h-100">
           <div class="card-body">
             <div class="d-flex justify-content-between">
               <div>
-                <h4 class="fw-bold mb-1">
-                  <?php
-                    $upcomingCount = 0;
-                    $now = new DateTime();
-                    foreach ($activities as $activity) {
-                      if (!empty($activity['date_activite']) && !empty($activity['heure_debut'])) {
-                        // Créer un DateTime pour le début de l'activité
-                        $activityStartTime = new DateTime($activity['date_activite'] . ' ' . $activity['heure_debut']);
-                        
-                        // L'activité est à venir si elle n'a pas encore commencé
-                        if ($activityStartTime > $now) {
-                          $upcomingCount++;
-                        }
-                      }
-                    }
-                    echo $upcomingCount;
-                  ?>
-                </h4>
+                <h4 class="fw-bold mb-1"><?= $upcomingCount ?></h4>
                 <p class="mb-0 opacity-75">À Venir</p>
               </div>
               <div class="align-self-center">
-                <i class="bi bi-clock-fill fs-1 opacity-75"></i>
+                <i class="bi bi-clock fs-1 opacity-75"></i>
               </div>
             </div>
           </div>
         </div>
       </div>
       <div class="col-xl-3 col-md-6 mb-3">
-        <div class="card border-0 bg-warning bg-gradient text-white shadow-sm h-100">
+        <div class="card border-0 bg-gradient-violet text-white shadow-sm h-100">
           <div class="card-body">
             <div class="d-flex justify-content-between">
               <div>
-                <h4 class="fw-bold mb-1">
-                  <?php
-                    $availableActivities = 0;
-                    foreach ($activities as $activity) {
-                      if (!empty($activity['capacite']) && (int)$activity['capacite'] > 0) {
-                        $inscriptionsCount = (int)($activity['inscriptions_count'] ?? 0);
-                        $capacity = (int)$activity['capacite'];
-                        if ($inscriptionsCount < $capacity) {
-                          $availableActivities++;
-                        }
-                      }
-                    }
-                    echo $availableActivities;
-                  ?>
-                </h4>
+                <h4 class="fw-bold mb-1"><?= $availableActivities ?></h4>
                 <p class="mb-0 opacity-75">Activités Disponibles</p>
-                <small class="opacity-75">
-                  Avec places libres
-                </small>
               </div>
               <div class="align-self-center">
-                <i class="bi bi-people-fill fs-1 opacity-75"></i>
+                <i class="bi bi-people fs-1 opacity-75"></i>
               </div>
             </div>
           </div>
@@ -132,11 +119,11 @@
   <?php endif; ?>
 
   <!-- Tableau des activités -->
-  <div class="card border-0 shadow-sm">
+  <div class="card border-0 shadow-lg">
     <div class="card-header bg-white border-0 py-3">
       <div class="d-flex justify-content-between align-items-center">
         <h5 class="mb-0 text-dark fw-semibold">
-          <i class="bi bi-table me-2 text-primary"></i>
+          <i class="bi bi-table me-2 text-blue-violet"></i>
           Liste des Activités
         </h5>
         <div class="d-flex gap-2">
@@ -159,33 +146,33 @@
           <thead class="table-light">
             <tr>
               <th scope="col" class="border-0 px-2 py-3 text-nowrap" style="width: 20%;">
-                <i class="bi bi-calendar-event me-1 text-primary"></i>Activité
+                <i class="bi bi-calendar-event me-1 text-blue-violet"></i>Activité
               </th>
               <th scope="col" class="border-0 px-2 py-3 text-nowrap" style="width: 12%;">
-                <i class="bi bi-calendar-date me-1 text-primary"></i>Date
+                <i class="bi bi-calendar-date me-1 text-blue-violet"></i>Date
               </th>
               <th scope="col" class="border-0 px-2 py-3 text-nowrap" style="width: 10%;">
-                <i class="bi bi-clock me-1 text-primary"></i>Horaire
+                <i class="bi bi-clock me-1 text-blue-violet"></i>Horaire
               </th>
               <th scope="col" class="border-0 px-2 py-3 text-nowrap" style="width: 8%;">
-                <i class="bi bi-people me-1 text-primary"></i>Capacité
+                <i class="bi bi-people me-1 text-blue-violet"></i>Capacité
               </th>
               <th scope="col" class="border-0 px-2 py-3 text-nowrap" style="width: 8%;">
-                <i class="bi bi-person-check me-1 text-primary"></i>Inscrits
+                <i class="bi bi-person-check me-1 text-blue-violet"></i>Inscrits
               </th>
               <th scope="col" class="border-0 px-2 py-3 text-nowrap" style="width: 10%;">
-                <i class="bi bi-toggle-on me-1 text-primary"></i>Statut
+                <i class="bi bi-toggle-on me-1 text-blue-violet"></i>Statut
               </th>
               <th scope="col" class="border-0 px-2 py-3 text-nowrap" style="width: 25%;">
-                <i class="bi bi-text-paragraph me-1 text-primary"></i>Description
+                <i class="bi bi-text-paragraph me-1 text-blue-violet"></i>Description
               </th>
               <?php if ($isAdmin): ?>
               <th scope="col" class="border-0 px-2 py-3 text-nowrap" style="width: 15%;">
-                <i class="bi bi-person-workspace me-1 text-primary"></i>Coach
+                <i class="bi bi-person-workspace me-1 text-blue-violet"></i>Coach
               </th>
               <?php endif; ?>
               <th scope="col" class="border-0 px-2 py-3 text-center text-nowrap" style="width: 10%;">
-                <i class="bi bi-gear me-1 text-primary"></i>Actions
+                <i class="bi bi-gear me-1 text-blue-violet"></i>Actions
               </th>
             </tr>
           </thead>
@@ -197,7 +184,7 @@
                     <i class="bi bi-calendar-x fs-1 mb-3 d-block opacity-50"></i>
                     <h6 class="mb-2">Aucune activité trouvée</h6>
                     <p class="mb-3">Commencez par créer votre première activité au système.</p>
-                    <a class="btn btn-primary" href="index.php?controller=activities&action=create">
+                    <a class="btn btn-blue-violet" href="index.php?controller=activities&action=create">
                       <i class="bi bi-plus-lg me-2"></i>Créer la Première Activité
                     </a>
                   </div>
@@ -208,7 +195,7 @@
               <tr class="activity-row">
                 <td class="px-2 py-3">
                   <div class="d-flex align-items-center">
-                    <div class="activity-icon bg-primary bg-gradient text-white rounded-circle d-flex align-items-center justify-content-center me-2">
+                    <div class="activity-icon activity-icon-main">
                       <i class="bi bi-calendar-event-fill"></i>
                     </div>
                     <div>
@@ -231,10 +218,10 @@
                 <td class="px-2 py-3">
                   <?php if (!empty($activity['heure_debut']) && !empty($activity['heure_fin'])): ?>
                     <div class="d-flex flex-column">
-                      <small class="text-success">
+                      <small class="text-blue-violet">
                         <i class="bi bi-play-circle-fill me-1"></i><?= htmlspecialchars($activity['heure_debut']) ?>
                       </small>
-                      <small class="text-danger">
+                      <small class="text-purple">
                         <i class="bi bi-stop-circle-fill me-1"></i><?= htmlspecialchars($activity['heure_fin']) ?>
                       </small>
                     </div>
@@ -244,7 +231,7 @@
                 </td>
                 <td class="px-2 py-3">
                   <?php if (!empty($activity['capacite']) && $activity['capacite'] > 0): ?>
-                    <span class="badge bg-info bg-opacity-10 text-info border border-info">
+                    <span class="badge badge-capacity">
                       <i class="bi bi-people-fill me-1"></i><?= htmlspecialchars($activity['capacite']) ?>
                     </span>
                   <?php else: ?>
@@ -257,8 +244,8 @@
                     $capacity = (int)($activity['capacite'] ?? 0);
                     if ($capacity > 0) {
                       $percentage = round(($inscriptionsCount / $capacity) * 100);
-                      $badgeClass = $percentage >= 90 ? 'bg-danger' : ($percentage >= 70 ? 'bg-warning' : 'bg-success');
-                      echo '<span class="badge ' . $badgeClass . ' bg-opacity-10 text-' . str_replace('bg-', '', $badgeClass) . ' border border-' . str_replace('bg-', '', $badgeClass) . '">';
+                      $badgeClass = $percentage >= 90 ? 'badge-inscriptions-high' : ($percentage >= 70 ? 'badge-inscriptions-medium' : 'badge-inscriptions-low');
+                      echo '<span class="badge ' . $badgeClass . '">';
                       echo '<i class="bi bi-person-check me-1"></i>' . $inscriptionsCount . '/' . $capacity;
                       echo '</span>';
                     } else {
@@ -289,8 +276,8 @@
                 <?php if ($isAdmin): ?>
                 <td class="px-2 py-3">
                   <?php if (!empty($activity['coach_prenom']) || !empty($activity['coach_nom'])): ?>
-                    <div class="d-flex align-items-center">
-                      <div class="coach-avatar bg-warning bg-opacity-10 text-warning rounded-circle d-flex align-items-center justify-content-center me-2">
+                                        <div class="d-flex align-items-center">
+                      <div class="coach-avatar coach-avatar-activity">
                         <i class="bi bi-person-workspace"></i>
                       </div>
                       <span class="text-truncate" title="<?= htmlspecialchars(trim($activity['coach_prenom'] . ' ' . $activity['coach_nom'])) ?>">
@@ -334,11 +321,31 @@
   flex-shrink: 0;
 }
 
+.activity-icon-main {
+  background: linear-gradient(135deg, var(--blue-violet) 0%, var(--indigo) 100%);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 0.5rem;
+}
+
 .coach-avatar {
   width: 28px;
   height: 28px;
   font-size: 12px;
   flex-shrink: 0;
+}
+
+.coach-avatar-activity {
+  background-color: rgba(139, 92, 246, 0.1);
+  color: var(--purple);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 0.5rem;
 }
 
 .activity-row:hover {
@@ -384,16 +391,74 @@
   white-space: nowrap;
 }
 
+/* Badge pour la capacité */
+.badge-capacity {
+  font-size: 0.7rem;
+  padding: 0.4em 0.6em;
+  font-weight: 600;
+  border-radius: 12px;
+  background-color: rgba(79, 70, 229, 0.1);
+  color: var(--blue-violet);
+  border: 1px solid rgba(79, 70, 229, 0.3);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+}
+
+/* Badges pour les inscriptions */
+.badge-inscriptions-low {
+  font-size: 0.7rem;
+  padding: 0.4em 0.6em;
+  font-weight: 600;
+  border-radius: 12px;
+  background-color: rgba(79, 70, 229, 0.1);
+  color: var(--blue-violet);
+  border: 1px solid rgba(79, 70, 229, 0.3);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+}
+
+.badge-inscriptions-medium {
+  font-size: 0.7rem;
+  padding: 0.4em 0.6em;
+  font-weight: 600;
+  border-radius: 12px;
+  background-color: rgba(99, 102, 241, 0.1);
+  color: var(--indigo);
+  border: 1px solid rgba(99, 102, 241, 0.3);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+}
+
+.badge-inscriptions-high {
+  font-size: 0.7rem;
+  padding: 0.4em 0.6em;
+  font-weight: 600;
+  border-radius: 12px;
+  background-color: rgba(139, 92, 246, 0.1);
+  color: var(--purple);
+  border: 1px solid rgba(139, 92, 246, 0.3);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+}
+
 .badge-status.badge-success {
-  background-color: rgba(25, 135, 84, 0.1);
-  color: #198754;
-  border: 1px solid rgba(25, 135, 84, 0.3);
+  background-color: rgba(79, 70, 229, 0.1);
+  color: var(--blue-violet);
+  border: 1px solid rgba(79, 70, 229, 0.3);
 }
 
 .badge-status.badge-secondary {
-  background-color: rgba(108, 117, 125, 0.1);
-  color: #6c757d;
-  border: 1px solid rgba(108, 117, 125, 0.3);
+  background-color: rgba(139, 92, 246, 0.1);
+  color: var(--purple);
+  border: 1px solid rgba(139, 92, 246, 0.3);
 }
 
 .table th {
@@ -568,6 +633,107 @@
 .badge-status:hover {
   transform: scale(1.05);
   transition: transform 0.2s ease;
+}
+
+/* Nouvelles couleurs personnalisées - Dégradés Bleu-Violet */
+:root {
+  --blue-violet: #4f46e5;
+  --blue-violet-rgb: 79, 70, 229;
+  --indigo: #6366f1;
+  --indigo-rgb: 99, 102, 241;
+  --purple: #8b5cf6;
+  --purple-rgb: 139, 92, 246;
+  --violet: #7c3aed;
+  --violet-rgb: 124, 58, 237;
+  --blue: #3b82f6;
+  --blue-rgb: 59, 130, 246;
+}
+
+/* Classes de couleurs personnalisées */
+.btn-blue-violet {
+  background-color: var(--blue-violet);
+  border-color: var(--blue-violet);
+  color: white;
+}
+
+.btn-blue-violet:hover {
+  background-color: #4338ca;
+  border-color: #4338ca;
+  color: white;
+}
+
+.btn-outline-blue-violet {
+  color: var(--blue-violet);
+  border-color: var(--blue-violet);
+}
+
+.btn-outline-blue-violet:hover {
+  background-color: var(--blue-violet);
+  border-color: var(--blue-violet);
+  color: white;
+}
+
+.text-blue-violet {
+  color: var(--blue-violet) !important;
+}
+
+.text-indigo {
+  color: var(--indigo) !important;
+}
+
+.text-purple {
+  color: var(--purple) !important;
+}
+
+.text-violet {
+  color: var(--violet) !important;
+}
+
+.bg-blue-violet {
+  background-color: var(--blue-violet) !important;
+}
+
+.bg-purple {
+  background-color: var(--purple) !important;
+}
+
+.bg-indigo {
+  background-color: var(--indigo) !important;
+}
+
+.bg-violet {
+  background-color: var(--violet) !important;
+}
+
+/* Dégradés Bleu-Violet */
+.bg-gradient-blue-violet {
+  background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);
+}
+
+.bg-gradient-indigo {
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+}
+
+.bg-gradient-purple {
+  background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+}
+
+.bg-gradient-violet {
+  background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
+}
+
+/* Focus amélioré pour la recherche */
+#searchInput:focus {
+  border-color: var(--blue-violet);
+  box-shadow: 0 0 0 0.2rem rgba(79, 70, 229, 0.25);
+}
+
+.activity-row:hover {
+  background-color: rgba(79, 70, 229, 0.05) !important;
+}
+
+.activity-row:hover {
+  background-color: rgba(79, 70, 229, 0.08) !important;
 }
 </style>
 

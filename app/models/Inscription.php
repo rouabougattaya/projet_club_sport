@@ -171,6 +171,35 @@ class Inscription {
 	}
 
 	/**
+	 * Récupère toutes les inscriptions pour une liste d'IDs d'activités
+	 */
+	public function getByActivityIds(array $activityIds): array {
+		if (empty($activityIds)) {
+			return [];
+		}
+		
+		$placeholders = str_repeat('?,', count($activityIds) - 1) . '?';
+		$sql = "SELECT i.*, 
+				a.nom AS activity_nom, a.id_entraineur AS activity_coach_id,
+				u.nom AS user_nom, u.prenom AS user_prenom
+			FROM inscriptions i
+			INNER JOIN activities a ON a.id = i.activity_id
+			INNER JOIN users u ON u.id = i.user_id
+			WHERE i.activity_id IN ($placeholders)
+			ORDER BY CASE i.statut
+				WHEN 'en_attente' THEN 1
+				WHEN 'validée' THEN 2
+				WHEN 'annulée' THEN 3
+				WHEN 'terminée' THEN 4
+				ELSE 5
+			END, i.date_inscription DESC, i.id DESC";
+		
+		$stmt = $this->pdo->prepare($sql);
+		$stmt->execute($activityIds);
+		return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+	}
+
+	/**
 	 * Supprime complètement une inscription de la base de données
 	 */
 	public function delete(int $id): bool {
