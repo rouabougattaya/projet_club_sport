@@ -1,0 +1,44 @@
+# Fichiers système
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Fichiers temporaires
+*.tmp
+*.temp
+*.log
+*.cache
+
+# Fichiers de configuration locaux
+.env
+.env.local
+.env.production
+
+# Dossiers de dépendances
+node_modules/
+vendor/
+
+# Fichiers de sauvegarde
+*.bak
+*.backup
+*~
+
+# Fichiers d'IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Fichiers de cache PHP
+*.cache
+
+# Fichiers de logs
+logs/
+*.log
+
+# Fichiers de configuration Prepros
+prepros-*.config

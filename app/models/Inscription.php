@@ -206,6 +206,25 @@ class Inscription {
 		$stmt = $this->pdo->prepare("DELETE FROM inscriptions WHERE id = ?");
 		return $stmt->execute([$id]);
 	}
+
+	/**
+	 * Compte le nombre total d'inscriptions d'un utilisateur
+	 */
+	public function countByUser(int $userId): int {
+		$stmt = $this->pdo->prepare("SELECT COUNT(*) FROM inscriptions WHERE user_id = ?");
+		$stmt->execute([$userId]);
+		return (int)$stmt->fetchColumn();
+	}
+
+	/**
+	 * Compte le nombre d'inscriptions d'un utilisateur par statut
+	 */
+	public function countByUserAndStatus(int $userId, string $status): int {
+		$stmt = $this->pdo->prepare("SELECT COUNT(*) FROM inscriptions WHERE user_id = ? AND statut = ?");
+		$stmt->execute([$userId, $status]);
+		return (int)$stmt->fetchColumn();
+	}
+
 }
 
 

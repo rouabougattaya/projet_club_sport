@@ -82,15 +82,34 @@ class Activity {
 	}
 
 	/**
-	 * Met à jour automatiquement le statut des activités passées vers "terminée"
+	 * Met à jour automatiquement le statut des activités passées vers "Inactif"
+	 * Vérifie si la date ET l'heure de fin sont dépassées
 	 */
-	public function updateExpiredActivities(): void {
+	public function updateExpiredActivities(): int {
 		$sql = "UPDATE activities 
 				SET statut = 'Inactif' 
 				WHERE statut = 'active' 
 				AND CONCAT(date_activite, ' ', heure_fin) < NOW()";
 		$stmt = $this->pdo->prepare($sql);
 		$stmt->execute();
+		
+		// Retourne le nombre d'activités mises à jour
+		return $stmt->rowCount();
+	}
+
+	/**
+	 * Vérifie et met à jour le statut d'une activité spécifique
+	 */
+	public function checkAndUpdateActivityStatus(int $activityId): bool {
+		$sql = "UPDATE activities 
+				SET statut = 'Inactif' 
+				WHERE id = ? 
+				AND statut = 'active' 
+				AND CONCAT(date_activite, ' ', heure_fin) < NOW()";
+		$stmt = $this->pdo->prepare($sql);
+		$stmt->execute([$activityId]);
+		
+		return $stmt->rowCount() > 0;
 	}
 
 	public function create(array $data): bool {

@@ -33,6 +33,12 @@ class ActivitiesController {
 		require_once __DIR__ . '/../models/Inscription.php';
 		$inscriptionModel = new Inscription($pdo);
 		
+		// Vérification automatique et mise à jour des activités expirées
+		$updatedCount = $activityModel->updateExpiredActivities();
+		if ($updatedCount > 0) {
+			Flash::add('info', "{$updatedCount} activité(s) expirée(s) ont été automatiquement désactivée(s).");
+		}
+		
 		$sessionUser = $_SESSION['user'];
 		$isAdmin = strtolower((string)($sessionUser['role'] ?? '')) === 'admin';
 		
@@ -117,6 +123,15 @@ class ActivitiesController {
 		$id = (int)($_GET['id'] ?? 0);
 		$activity = $activityModel->getById($id);
 		if (!$activity) { http_response_code(404); echo 'Activité introuvable'; exit; }
+		
+		// Vérification automatique du statut de cette activité spécifique
+		$wasUpdated = $activityModel->checkAndUpdateActivityStatus($id);
+		if ($wasUpdated) {
+			Flash::add('warning', 'Cette activité a été automatiquement désactivée car elle est expirée.');
+			// Recharger l'activité pour avoir le statut mis à jour
+			$activity = $activityModel->getById($id);
+		}
+		
 		// Coach can only edit own activities
 		if (!$isAdmin && (int)$activity['id_entraineur'] !== (int)$sessionUser['id']) { http_response_code(403); echo 'Accès refusé'; exit; }
 		$errors = [];

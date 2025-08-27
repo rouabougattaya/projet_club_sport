@@ -79,12 +79,7 @@ $isEntraineur = !empty($isEntraineur) && $isEntraineur;
             <?php if ($isAdmin): ?>
             <div class="stat-card stat-primary">
                 <div class="stat-icon">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                        <circle cx="9" cy="7" r="4"></circle>
-                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-                        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-                    </svg>
+                    <i class="bi bi-people-fill"></i>
                 </div>
                 <div class="stat-content">
                     <div class="stat-number"><?= $totalUsers ?></div>
@@ -96,12 +91,7 @@ $isEntraineur = !empty($isEntraineur) && $isEntraineur;
             
             <div class="stat-card stat-secondary">
                 <div class="stat-icon">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                        <line x1="16" y1="2" x2="16" y2="6"></line>
-                        <line x1="8" y1="2" x2="8" y2="6"></line>
-                        <line x1="3" y1="10" x2="21" y2="10"></line>
-                    </svg>
+                    <i class="bi bi-calendar-event-fill"></i>
                 </div>
                 <div class="stat-content">
                     <div class="stat-number"><?= $totalActivities ?></div>
@@ -118,12 +108,7 @@ $isEntraineur = !empty($isEntraineur) && $isEntraineur;
             
             <div class="stat-card stat-tertiary">
                 <div class="stat-icon">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M9 11H1a1 1 0 0 1 0-2h8a1 1 0 0 1 0 2z"></path>
-                        <path d="M23 11h-8a1 1 0 0 1 0-2h8a1 1 0 0 1 0 2z"></path>
-                        <path d="M9 17H1a1 1 0 0 1 0-2h8a1 1 0 0 1 0 2z"></path>
-                        <path d="M23 17h-8a1 1 0 0 1 0-2h8a1 1 0 0 1 0 2z"></path>
-                    </svg>
+                    <i class="bi bi-list-check"></i>
                 </div>
                 <div class="stat-content">
                     <div class="stat-number"><?= $totalInscriptions ?></div>
@@ -140,10 +125,7 @@ $isEntraineur = !empty($isEntraineur) && $isEntraineur;
             
             <div class="stat-card stat-quaternary">
                 <div class="stat-icon">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="12" cy="12" r="10"></circle>
-                        <polyline points="12,6 12,12 16,14"></polyline>
-                    </svg>
+                    <i class="bi bi-clock-history"></i>
                 </div>
                 <div class="stat-content">
                     <div class="stat-number"><?= $completedActivities ?></div>
@@ -166,27 +148,32 @@ $isEntraineur = !empty($isEntraineur) && $isEntraineur;
         </div>
     </div>
 
-    <!-- Actions rapides -->
+    <!-- Actions rapides - CORRIGÉ -->
     <div class="actions-section">
         <h2 class="section-title">Actions Rapides</h2>
         <div class="actions-grid">
             <?php if ($isAdmin): ?>
             <a href="index.php?controller=activities&action=create" class="action-btn action-primary">
+                <i class="bi bi-plus-circle"></i>
                 <span class="action-text">Nouvelle Activité</span>
             </a>
             <a href="index.php?controller=user&action=create" class="action-btn action-secondary">
+                <i class="bi bi-person-plus"></i>
                 <span class="action-text">Nouvel Utilisateur</span>
             </a>
             <?php elseif ($isEntraineur): ?>
             <a href="index.php?controller=activities&action=create" class="action-btn action-primary">
+                <i class="bi bi-plus-circle"></i>
                 <span class="action-text">Nouvelle Activité</span>
             </a>
             <a href="index.php?controller=activities&action=index" class="action-btn action-secondary">
+                <i class="bi bi-list-ul"></i>
                 <span class="action-text">Mes Activités</span>
             </a>
             <?php endif; ?>
             
             <a href="index.php?controller=inscriptions&action=index" class="action-btn action-tertiary">
+                <i class="bi bi-people"></i>
                 <span class="action-text">
                     <?php if ($isEntraineur): ?>
                         Gérer Participants
@@ -197,6 +184,7 @@ $isEntraineur = !empty($isEntraineur) && $isEntraineur;
             </a>
             
             <a href="index.php?controller=activities&action=index" class="action-btn action-quaternary">
+                <i class="bi bi-calendar-event"></i>
                 <span class="action-text">
                     <?php if ($isEntraineur): ?>
                         Voir Mes Activités
@@ -339,9 +327,8 @@ $isEntraineur = !empty($isEntraineur) && $isEntraineur;
     <?php endif; ?>
 </div>
 
-<link rel="stylesheet" href="assets/css/dashboard-fix.css?v=<?= time() ?>">
 <style>
-/* Cache-busting: v2.0 - $(date) */
+/* Dashboard CSS Corrigé - v4.0 - Compatible avec le nouveau template admin.php */
 :root {
     --primary-blue: #4f46e5;
     --secondary-blue: #6366f1;
@@ -363,6 +350,8 @@ $isEntraineur = !empty($isEntraineur) && $isEntraineur;
     padding: 16px;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     background: var(--bg-light);
+    min-height: 100vh;
+    overflow-x: hidden;
 }
 
 .dashboard-header {
@@ -435,24 +424,14 @@ $isEntraineur = !empty($isEntraineur) && $isEntraineur;
 }
 
 .stats-section, .actions-section, .main-content, .trainer-section {
-    margin-bottom: 20px;
-}
-
-/* FORCER LA RÉDUCTION D'ESPACE */
-.actions-section .section-title {
-    margin-bottom: 6px !important;
-}
-
-.actions-section .actions-grid {
-    margin-top: 0 !important;
-    padding-top: 0 !important;
+    margin-bottom: 24px;
 }
 
 .section-title {
     font-size: 1.3rem;
     font-weight: 600;
     color: var(--text-dark);
-    margin-bottom: 8px;
+    margin-bottom: 16px;
     letter-spacing: -0.025em;
 }
 
@@ -493,6 +472,7 @@ $isEntraineur = !empty($isEntraineur) && $isEntraineur;
     align-items: center;
     justify-content: center;
     color: var(--primary-blue);
+    font-size: 1.5rem;
 }
 
 .stat-content {
@@ -519,19 +499,26 @@ $isEntraineur = !empty($isEntraineur) && $isEntraineur;
     color: var(--text-light);
 }
 
+/* ACTIONS RAPIDES - CORRIGÉ ET VISIBLE */
+.actions-section {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border-color);
+}
+
 .actions-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 10px;
-    margin-top: 0;
-    padding-top: 0;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
 }
 
 .action-btn {
     background: white;
     border: 2px solid var(--border-color);
     border-radius: 10px;
-    padding: 12px 10px;
+    padding: 16px 12px;
     text-decoration: none;
     color: var(--text-dark);
     text-align: center;
@@ -539,8 +526,10 @@ $isEntraineur = !empty($isEntraineur) && $isEntraineur;
     display: flex;
     align-items: center;
     justify-content: center;
+    gap: 8px;
     font-weight: 600;
     font-size: 0.9rem;
+    min-height: 60px;
 }
 
 .action-btn:hover {
@@ -548,6 +537,10 @@ $isEntraineur = !empty($isEntraineur) && $isEntraineur;
     box-shadow: var(--shadow-lg);
     text-decoration: none;
     color: var(--text-dark);
+}
+
+.action-btn i {
+    font-size: 1.2rem;
 }
 
 .action-primary { 
@@ -589,6 +582,7 @@ $isEntraineur = !empty($isEntraineur) && $isEntraineur;
     border-radius: 16px;
     box-shadow: var(--shadow);
     overflow: hidden;
+    border: 1px solid var(--border-color);
 }
 
 .card-header {
@@ -708,6 +702,7 @@ $isEntraineur = !empty($isEntraineur) && $isEntraineur;
     border-radius: 12px;
     padding: 24px;
     box-shadow: var(--shadow);
+    border: 1px solid var(--border-color);
 }
 
 .trainer-stats {
@@ -738,13 +733,14 @@ $isEntraineur = !empty($isEntraineur) && $isEntraineur;
     font-weight: 500;
 }
 
+/* Responsive Design */
 @media (max-width: 768px) {
     .dashboard-container {
-        padding: 16px;
+        padding: 12px;
     }
     
     .dashboard-header {
-        padding: 24px;
+        padding: 20px;
     }
     
     .header-content {
@@ -754,7 +750,7 @@ $isEntraineur = !empty($isEntraineur) && $isEntraineur;
     }
     
     .welcome-section .main-title {
-        font-size: 1.8rem;
+        font-size: 1.6rem;
     }
     
     .stats-grid {
@@ -782,6 +778,11 @@ $isEntraineur = !empty($isEntraineur) && $isEntraineur;
     
     .action-btn {
         padding: 20px 16px;
+        min-height: 70px;
+    }
+    
+    .actions-grid {
+        grid-template-columns: 1fr;
     }
 }
 </style>

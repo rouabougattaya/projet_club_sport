@@ -45,6 +45,7 @@
                 <li><a href="index.php?controller=front&action=activities" class="nav-link active">Activités</a></li>
                 <li><a href="index.php?controller=front&action=planning" class="nav-link">Mon Planning</a></li>
                 <li><a href="index.php?controller=front&action=history" class="nav-link">Historique</a></li>
+                <li><a href="index.php?controller=front&action=profile" class="nav-link">Mon Profil</a></li>
                 <li><a href="index.php?controller=auth&action=logout" class="nav-link">Déconnexion</a></li>
               </ul>
             </nav>

@@ -10,8 +10,8 @@ class Router
         // Si aucun contrôleur n'est spécifié et qu'un utilisateur est connecté
         if ($controllerName === null) {
             if (!empty($_SESSION['user'])) {
-                // Rediriger vers le dashboard
-                header('Location: index.php?controller=dashboard&action=index');
+                // Rediriger vers la page d'accueil par défaut (front-end)
+                header('Location: index.php?controller=front&action=home');
                 exit;
             } else {
                 // Rediriger vers la page de connexion

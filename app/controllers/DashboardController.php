@@ -24,6 +24,14 @@ class DashboardController {
             header('Location: index.php?controller=auth&action=login');
             exit;
         }
+        
+        // Vérifier que l'utilisateur a le rôle admin ou entraineur
+        $role = strtolower(trim($_SESSION['user']['role'] ?? ''));
+        if ($role !== 'admin' && $role !== 'entraineur') {
+            // Afficher une erreur d'accès au lieu de rediriger
+            $this->displayError('Accès refusé', 'Vous n\'avez pas les permissions nécessaires pour accéder au back-office. Seuls les administrateurs et entraîneurs peuvent y accéder.');
+            exit;
+        }
     }
 
     private function getCurrentUserData(): array {
@@ -95,7 +103,7 @@ class DashboardController {
 
     private function getStandardUserData(int $userId): array {
         try {
-            $inscriptions = $this->inscriptionModel->getByUserId($userId);
+            $inscriptions = $this->inscriptionModel->getAllInscriptionsByUser($userId);
             
             if (!empty($inscriptions)) {
                 $activityIds = array_column($inscriptions, 'activity_id');
@@ -125,13 +133,15 @@ class DashboardController {
             $role = $userData['role'];
             $userId = $userData['id'];
 
-            // Récupérer les données selon le rôle
+            // Récupérer les données selon le rôle (seulement admin ou entraineur)
             if ($role === 'admin') {
                 $data = $this->getAdminData();
             } elseif ($role === 'entraineur') {
                 $data = $this->getEntraineurData($userId);
             } else {
-                $data = $this->getStandardUserData($userId);
+                // Ce cas ne devrait jamais arriver grâce à requireAuth()
+                header('Location: index.php?controller=front&action=home');
+                exit;
             }
 
             // Extraire les variables pour la vue

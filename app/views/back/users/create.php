@@ -30,7 +30,7 @@
           </h5>
         </div>
         <div class="card-body p-4">
-          <form method="post" class="needs-validation" novalidate>
+          <form method="post" id="createUserForm">
             <!-- Informations personnelles -->
             <div class="row g-4 mb-4">
               <div class="col-12">
@@ -44,8 +44,9 @@
                   <i class="bi bi-person me-1 text-blue-violet"></i>
                   Nom <span class="text-danger">*</span>
                 </label>
-                <input type="text" name="nom" class="form-control form-control-lg" 
-                       required placeholder="Entrez le nom de famille">
+                <input type="text" name="nom" id="nom" class="form-control form-control-lg" 
+                       placeholder="Entrez le nom de famille">
+                <div class="invalid-feedback" id="nom-error"></div>
                 <div class="form-text">Nom de famille de l'utilisateur</div>
               </div>
               
@@ -54,31 +55,34 @@
                   <i class="bi bi-person me-1 text-blue-violet"></i>
                   Prénom <span class="text-danger">*</span>
                 </label>
-                <input type="text" name="prenom" class="form-control form-control-lg" 
-                       required placeholder="Entrez le prénom">
+                <input type="text" name="prenom" id="prenom" class="form-control form-control-lg" 
+                       placeholder="Entrez le prénom">
+                <div class="invalid-feedback" id="prenom-error"></div>
                 <div class="form-text">Prénom de l'utilisateur</div>
               </div>
               
               <div class="col-md-6">
                 <label class="form-label fw-semibold">
                   <i class="bi bi-card-text me-1 text-blue-violet"></i>
-                  CIN
+                  CIN <span class="text-danger">*</span>
                 </label>
-                <input type="text" name="cin" class="form-control form-control-lg" 
-                       placeholder="Numéro de carte d'identité">
-                <div class="form-text">Numéro de carte d'identité nationale</div>
+                <input type="text" name="cin" id="cin" class="form-control form-control-lg" 
+                       placeholder="Ex: 12345678" maxlength="8" pattern="\d{8}">
+                <div class="invalid-feedback" id="cin-error"></div>
+                <div class="form-text">Numéro de carte d'identité nationale (exactement 8 chiffres)</div>
               </div>
               
               <div class="col-md-6">
                 <label class="form-label fw-semibold">
                   <i class="bi bi-gender-ambiguous me-1 text-blue-violet"></i>
-                  Genre
+                  Genre <span class="text-danger">*</span>
                 </label>
-                <select name="genre" class="form-select form-select-lg">
+                <select name="genre" id="genre" class="form-select form-select-lg">
                   <option value="">Sélectionnez le genre</option>
                   <option value="Homme">Homme</option>
                   <option value="Femme">Femme</option>
                 </select>
+                <div class="invalid-feedback" id="genre-error"></div>
                 <div class="form-text">Genre de l'utilisateur</div>
               </div>
             </div>
@@ -94,20 +98,22 @@
               <div class="col-12">
                 <label class="form-label fw-semibold">
                   <i class="bi bi-geo-alt me-1 text-blue-violet"></i>
-                  Adresse
+                  Adresse <span class="text-danger">*</span>
                 </label>
-                <input type="text" name="adresse" class="form-control form-control-lg" 
-                       placeholder="Adresse complète">
-                <div class="form-text">Adresse complète de l'utilisateur</div>
+                <input type="text" name="adresse" id="adresse" class="form-control form-control-lg" 
+                       placeholder="Ex: Rue de la Paix, Ville">
+                <div class="invalid-feedback" id="adresse-error"></div>
+                <div class="form-text">Adresse complète (lettres, espaces, tirets et apostrophes uniquement)</div>
               </div>
               
               <div class="col-md-6">
                 <label class="form-label fw-semibold">
                   <i class="bi bi-telephone me-1 text-blue-violet"></i>
-                  Téléphone
+                  Téléphone <span class="text-danger">*</span>
                 </label>
-                <input type="tel" name="telephone" class="form-control form-control-lg" 
+                <input type="tel" name="telephone" id="telephone" class="form-control form-control-lg" 
                        placeholder="Numéro de téléphone">
+                <div class="invalid-feedback" id="telephone-error"></div>
                 <div class="form-text">Numéro de téléphone de contact</div>
               </div>
               
@@ -116,8 +122,9 @@
                   <i class="bi bi-envelope me-1 text-blue-violet"></i>
                   Email <span class="text-danger">*</span>
                 </label>
-                <input type="email" name="email" class="form-control form-control-lg" required 
+                <input type="email" name="email" id="email" class="form-control form-control-lg" 
                        placeholder="adresse@email.com">
+                <div class="invalid-feedback" id="email-error"></div>
                 <div class="form-text">Adresse email de l'utilisateur</div>
               </div>
             </div>
@@ -135,8 +142,9 @@
                   <i class="bi bi-key me-1 text-primary"></i>
                   Mot de passe <span class="text-danger">*</span>
                 </label>
-                <input type="password" name="mot_de_passe" class="form-control form-control-lg" 
-                       required placeholder="Mot de passe sécurisé">
+                <input type="password" name="mot_de_passe" id="mot_de_passe" class="form-control form-control-lg" 
+                       placeholder="Mot de passe sécurisé">
+                <div class="invalid-feedback" id="mot_de_passe-error"></div>
                 <div class="form-text">Mot de passe pour l'accès au système</div>
               </div>
               
@@ -147,7 +155,7 @@
                   <i class="bi bi-shield me-1 text-primary"></i>
                   Rôle <span class="text-danger">*</span>
                 </label>
-                <select name="role" class="form-select form-select-lg" required>
+                <select name="role" id="role" class="form-select form-select-lg">
                   <option value="">-- Sélectionner un rôle --</option>
                   <option value="admin">
                     <i class="bi bi-shield-fill-check"></i> Administrateur
@@ -159,6 +167,7 @@
                     <i class="bi bi-person-check-fill"></i> Adhérent
                   </option>
                 </select>
+                <div class="invalid-feedback" id="role-error"></div>
                 <div class="form-text">Choisir le rôle de l'utilisateur</div>
               </div>
               <?php else: ?>
@@ -372,51 +381,146 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-  // Validation en temps réel
-  const form = document.querySelector('.needs-validation');
-  const inputs = form.querySelectorAll('input, select, textarea');
-  
-  inputs.forEach(input => {
-    input.addEventListener('blur', function() {
-      validateField(this);
-    });
+  // Récupération des éléments du formulaire
+  const form = document.getElementById('createUserForm');
+  const nomInput = document.getElementById('nom');
+  const prenomInput = document.getElementById('prenom');
+  const emailInput = document.getElementById('email');
+  const motDePasseInput = document.getElementById('mot_de_passe');
+  const roleInput = document.getElementById('role');
+  const telephoneInput = document.querySelector('input[name="telephone"]');
+
+  // Fonction de validation des champs
+  function validateField(field, validationFunction) {
+    const errorElement = document.getElementById(field.id + '-error');
+    const result = validationFunction(field.value);
     
-    input.addEventListener('input', function() {
-      if (this.classList.contains('is-invalid')) {
-        validateField(this);
-      }
-    });
-  });
-  
-  function validateField(field) {
-    if (field.hasAttribute('required') && !field.value.trim()) {
-      field.classList.add('is-invalid');
-      field.classList.remove('is-valid');
-    } else if (field.hasAttribute('required') && field.value.trim()) {
+    if (result.valid) {
       field.classList.remove('is-invalid');
       field.classList.add('is-valid');
+      errorElement.textContent = '';
+    } else {
+      field.classList.remove('is-valid');
+      field.classList.add('is-invalid');
+      errorElement.textContent = result.message;
     }
+    return result.valid;
   }
+
+  // Règles de validation personnalisées
+  const validations = {
+    nom: (value) => {
+      if (!value.trim()) return { valid: false, message: 'Le nom est obligatoire' };
+      if (value.trim().length < 2) return { valid: false, message: 'Le nom doit contenir au moins 2 caractères' };
+      if (!/^[a-zA-ZÀ-ÿ\s'-]+$/.test(value.trim())) return { valid: false, message: 'Le nom ne peut contenir que des lettres, espaces, tirets et apostrophes' };
+      return { valid: true, message: '' };
+    },
+    prenom: (value) => {
+      if (!value.trim()) return { valid: false, message: 'Le prénom est obligatoire' };
+      if (value.trim().length < 2) return { valid: false, message: 'Le prénom doit contenir au moins 2 caractères' };
+      if (!/^[a-zA-ZÀ-ÿ\s'-]+$/.test(value.trim())) return { valid: false, message: 'Le prénom ne peut contenir que des lettres, espaces, tirets et apostrophes' };
+      return { valid: true, message: '' };
+    },
+    email: (value) => {
+      if (!value.trim()) return { valid: false, message: 'L\'email est obligatoire' };
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(value.trim())) return { valid: false, message: 'Format d\'email invalide' };
+      return { valid: true, message: '' };
+    },
+    mot_de_passe: (value) => {
+      if (!value.trim()) return { valid: false, message: 'Le mot de passe est obligatoire' };
+      if (value.length < 6) return { valid: false, message: 'Le mot de passe doit contenir au moins 6 caractères' };
+      if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(value)) return { valid: false, message: 'Le mot de passe doit contenir au moins une minuscule, une majuscule et un chiffre' };
+      return { valid: true, message: '' };
+    },
+    role: (value) => {
+      if (!value.trim()) return { valid: false, message: 'Le rôle est obligatoire' };
+      if (!['admin', 'entraineur', 'adherent'].includes(value)) return { valid: false, message: 'Rôle invalide' };
+      return { valid: true, message: '' };
+    },
+    cin: (value) => {
+      if (!value.trim()) return { valid: false, message: 'Le CIN est obligatoire' };
+      if (!/^\d{8}$/.test(value.trim())) return { valid: false, message: 'Le CIN doit contenir exactement 8 chiffres' };
+      return { valid: true, message: '' };
+    },
+    genre: (value) => {
+      if (!value.trim()) return { valid: false, message: 'Le genre est obligatoire' };
+      if (!['Homme', 'Femme'].includes(value)) return { valid: false, message: 'Genre invalide' };
+      return { valid: true, message: '' };
+    },
+    adresse: (value) => {
+      if (!value.trim()) return { valid: false, message: 'L\'adresse est obligatoire' };
+      if (value.trim().length < 10) return { valid: false, message: 'L\'adresse doit contenir au moins 10 caractères' };
+      if (value.trim().length > 200) return { valid: false, message: 'L\'adresse ne peut pas dépasser 200 caractères' };
+      if (!/^[a-zA-ZÀ-ÿ\s\-\'\.]+$/.test(value.trim())) return { valid: false, message: 'L\'adresse ne peut contenir que des lettres, espaces, tirets et apostrophes' };
+      return { valid: true, message: '' };
+    },
+    telephone: (value) => {
+      if (!value.trim()) return { valid: false, message: 'Le téléphone est obligatoire' };
+      const phoneRegex = /^[\d\s\-\+\(\)]+$/;
+      if (!phoneRegex.test(value.trim())) return { valid: false, message: 'Format de téléphone invalide' };
+      if (value.trim().replace(/\D/g, '').length < 8) return { valid: false, message: 'Le numéro doit contenir au moins 8 chiffres' };
+      return { valid: true, message: '' };
+    }
+  };
+
+  // Validation en temps réel pour chaque champ
+  Object.keys(validations).forEach(fieldName => {
+    const field = document.getElementById(fieldName);
+    if (field) {
+      // Validation au chargement si le champ a une valeur
+      if (field.value.trim()) {
+        validateField(field, validations[fieldName]);
+      }
+      
+      // Validation quand on quitte le champ
+      field.addEventListener('blur', function() {
+        validateField(this, validations[fieldName]);
+      });
+      
+      // Validation aussi au changement pour feedback immédiat
+      field.addEventListener('input', function() {
+        if (this.value.trim()) {
+          validateField(this, validations[fieldName]);
+        } else {
+          // Si le champ devient vide, afficher l'erreur
+          this.classList.remove('is-valid');
+          this.classList.add('is-invalid');
+          const errorElement = document.getElementById(this.id + '-error');
+          if (errorElement) {
+            errorElement.textContent = validations[fieldName]('').message;
+          }
+        }
+      });
+    }
+  });
   
   // Validation du formulaire avant soumission
   form.addEventListener('submit', function(event) {
-    if (!form.checkValidity()) {
       event.preventDefault();
-      event.stopPropagation();
-      
-      // Afficher les erreurs pour tous les champs
-      inputs.forEach(input => {
-        validateField(input);
-      });
-    }
     
-    form.classList.add('was-validated');
+    let isFormValid = true;
+    
+    // Valider tous les champs obligatoires
+    Object.keys(validations).forEach(fieldName => {
+      const field = document.getElementById(fieldName);
+      if (field) {
+        const isValid = validateField(field, validations[fieldName]);
+        if (!isValid) {
+          isFormValid = false;
+        }
+      }
+    });
+
+    // Si le formulaire est valide, le soumettre
+    if (isFormValid) {
+      form.submit();
+    }
   });
-  
-  // Auto-format phone number
-  const phoneInput = document.querySelector('input[name="telephone"]');
-  if (phoneInput) {
-    phoneInput.addEventListener('input', function(e) {
+
+  // Auto-format pour le numéro de téléphone
+  if (telephoneInput) {
+    telephoneInput.addEventListener('input', function(e) {
       let value = e.target.value.replace(/\D/g, '');
       if (value.length > 0) {
         value = value.match(/(\d{0,2})(\d{0,2})(\d{0,2})(\d{0,2})/);

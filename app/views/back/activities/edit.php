@@ -46,7 +46,7 @@
             </div>
           <?php endif; ?>
 
-          <form method="post" class="needs-validation" novalidate>
+          <form method="post" id="editActivityForm">
             <!-- Informations de base -->
             <div class="row g-4 mb-4">
               <div class="col-12">
@@ -60,9 +60,10 @@
                   <i class="bi bi-calendar-event me-1 text-blue-violet"></i>
                   Nom de l'Activité <span class="text-danger">*</span>
                 </label>
-                <input type="text" name="nom" class="form-control form-control-lg" 
-                       required value="<?= htmlspecialchars($activity['nom']) ?>"
+                <input type="text" name="nom" id="nom" class="form-control form-control-lg" 
+                       value="<?= htmlspecialchars($activity['nom']) ?>"
                        placeholder="Ex: Cours de natation, Entraînement football...">
+                <div class="invalid-feedback" id="nom-error"></div>
                 <div class="form-text">Donnez un nom clair et descriptif à votre activité</div>
               </div>
               
@@ -71,9 +72,10 @@
                   <i class="bi bi-people me-1 text-blue-violet"></i>
                   Capacité Maximale
                 </label>
-                <input type="number" name="capacite" class="form-control form-control-lg" 
+                <input type="number" name="capacite" id="capacite" class="form-control form-control-lg" 
                        min="1" value="<?= htmlspecialchars($activity['capacite'] ?? '20') ?>"
                        placeholder="20">
+                <div class="invalid-feedback" id="capacite-error"></div>
                 <div class="form-text">Nombre maximum de participants</div>
               </div>
             </div>
@@ -91,9 +93,10 @@
                   <i class="bi bi-calendar-date me-1 text-blue-violet"></i>
                   Date de l'Activité
                 </label>
-                <input type="date" name="date_activite" class="form-control form-control-lg" 
+                <input type="date" name="date_activite" id="date_activite" class="form-control form-control-lg" 
                        value="<?= htmlspecialchars($activity['date_activite'] ?? '') ?>"
                        min="<?= date('Y-m-d') ?>">
+                <div class="invalid-feedback" id="date_activite-error"></div>
                 <div class="form-text">Date à laquelle l'activité se déroule</div>
               </div>
               
@@ -102,8 +105,9 @@
                   <i class="bi bi-play-circle me-1 text-success"></i>
                   Heure de Début
                 </label>
-                <input type="time" name="heure_debut" class="form-control form-control-lg" 
+                <input type="time" name="heure_debut" id="heure_debut" class="form-control form-control-lg" 
                        value="<?= htmlspecialchars($activity['heure_debut'] ?? '') ?>">
+                <div class="invalid-feedback" id="heure_debut-error"></div>
                 <div class="form-text">Heure de début de l'activité</div>
               </div>
               
@@ -112,8 +116,9 @@
                   <i class="bi bi-stop-circle me-1 text-danger"></i>
                   Heure de Fin
                 </label>
-                <input type="time" name="heure_fin" class="form-control form-control-lg" 
+                <input type="time" name="heure_fin" id="heure_fin" class="form-control form-control-lg" 
                        value="<?= htmlspecialchars($activity['heure_fin'] ?? '') ?>">
+                <div class="invalid-feedback" id="heure_fin-error"></div>
                 <div class="form-text">Heure de fin de l'activité</div>
               </div>
             </div>
@@ -131,7 +136,7 @@
                   <i class="bi bi-toggle-on me-1 text-primary"></i>
                   Statut de l'Activité
                 </label>
-                <select name="statut" class="form-select form-select-lg">
+                <select name="statut" id="statut" class="form-select form-select-lg">
                   <?php $s = trim((string)($activity['statut'] ?? 'active')); $isActive = ($s === 'active'); ?>
                   <option value="active" <?= $isActive ? 'selected' : '' ?>>
                     <i class="bi bi-check-circle me-2"></i>Actif
@@ -140,6 +145,7 @@
                     <i class="bi bi-pause-circle me-2"></i>Inactif
                   </option>
                 </select>
+                <div class="invalid-feedback" id="statut-error"></div>
                 <div class="form-text">Définir si l'activité est disponible</div>
               </div>
               
@@ -149,7 +155,7 @@
                   <i class="bi bi-person-workspace me-1 text-primary"></i>
                   Entraîneur Responsable <span class="text-danger">*</span>
                 </label>
-                <select name="id_entraineur" class="form-select form-select-lg" required>
+                <select name="id_entraineur" id="id_entraineur" class="form-select form-select-lg">
                   <option value="">-- Sélectionner un entraîneur --</option>
                   <?php foreach ($coaches as $coach): ?>
                     <option value="<?= (int)$coach['id'] ?>" 
@@ -159,6 +165,7 @@
                     </option>
                   <?php endforeach; ?>
                 </select>
+                <div class="invalid-feedback" id="id_entraineur-error"></div>
                 <div class="form-text">Choisir l'entraîneur qui encadrera l'activité</div>
               </div>
               <?php endif; ?>
@@ -177,8 +184,9 @@
                   <i class="bi bi-card-text me-1 text-primary"></i>
                   Description de l'Activité
                 </label>
-                <textarea name="description" class="form-control" rows="5" 
+                <textarea name="description" id="description" class="form-control" rows="5" 
                           placeholder="Décrivez en détail le contenu de l'activité, les objectifs, le matériel nécessaire, etc..."><?= htmlspecialchars($activity['description']) ?></textarea>
+                <div class="invalid-feedback" id="description-error"></div>
                 <div class="form-text">
                   <i class="bi bi-lightbulb me-1"></i>
                   Une description claire aide les participants à comprendre l'activité
@@ -392,84 +400,176 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-  // Validation en temps réel
-  const form = document.querySelector('.needs-validation');
-  const inputs = form.querySelectorAll('input, select, textarea');
-  
-  inputs.forEach(input => {
-    input.addEventListener('blur', function() {
-      validateField(this);
-    });
+  // Récupération des éléments du formulaire
+  const form = document.getElementById('editActivityForm');
+  const nomInput = document.getElementById('nom');
+  const capaciteInput = document.getElementById('capacite');
+  const dateActiviteInput = document.getElementById('date_activite');
+  const heureDebutInput = document.getElementById('heure_debut');
+  const heureFinInput = document.getElementById('heure_fin');
+
+  // Fonction de validation des champs
+  function validateField(field, validationFunction) {
+    const errorElement = document.getElementById(field.id + '-error');
+    const result = validationFunction(field.value);
     
-    input.addEventListener('input', function() {
-      if (this.classList.contains('is-invalid')) {
-        validateField(this);
-      }
-    });
-  });
-  
-  function validateField(field) {
-    if (field.hasAttribute('required') && !field.value.trim()) {
-      field.classList.add('is-invalid');
-      field.classList.remove('is-valid');
-    } else if (field.hasAttribute('required') && field.value.trim()) {
+    if (result.valid) {
       field.classList.remove('is-invalid');
       field.classList.add('is-valid');
+      errorElement.textContent = '';
+    } else {
+      field.classList.remove('is-valid');
+      field.classList.add('is-invalid');
+      errorElement.textContent = result.message;
     }
+    return result.valid;
   }
-  
-  // Validation du formulaire avant soumission
-  form.addEventListener('submit', function(event) {
-    if (!form.checkValidity()) {
-      event.preventDefault();
-      event.stopPropagation();
-      
-      // Afficher les erreurs pour tous les champs
-      inputs.forEach(input => {
-        validateField(input);
-      });
-    }
-    
-    form.classList.add('was-validated');
-  });
-  
-  // Validation de la date (pas de date passée)
-  const dateInput = document.querySelector('input[name="date_activite"]');
-  if (dateInput) {
-    dateInput.addEventListener('change', function() {
-      const selectedDate = new Date(this.value);
+
+  // Règles de validation personnalisées
+  const validations = {
+    nom: (value) => {
+      if (!value.trim()) return { valid: false, message: 'Le nom de l\'activité est obligatoire' };
+      if (value.trim().length < 3) return { valid: false, message: 'Le nom doit contenir au moins 3 caractères' };
+      if (value.trim().length > 100) return { valid: false, message: 'Le nom ne peut pas dépasser 100 caractères' };
+      // Vérification des caractères autorisés : lettres uniquement, espaces, tirets, apostrophes, points
+      if (!/^[a-zA-ZÀ-ÿ\s\-\'\.]+$/.test(value.trim())) {
+        return { valid: false, message: 'Le nom ne peut contenir que des lettres, espaces, tirets, apostrophes et points' };
+      }
+      return { valid: true, message: '' };
+    },
+    capacite: (value) => {
+      if (!value.trim()) return { valid: false, message: 'La capacité est obligatoire' };
+      const capacite = parseInt(value);
+      if (isNaN(capacite) || capacite < 1) return { valid: false, message: 'La capacité doit être un nombre positif' };
+      if (capacite > 1000) return { valid: false, message: 'La capacité ne peut pas dépasser 1000' };
+      return { valid: true, message: '' };
+    },
+    date_activite: (value) => {
+      if (!value.trim()) return { valid: false, message: 'La date est obligatoire' };
+      const selectedDate = new Date(value);
       const today = new Date();
       today.setHours(0, 0, 0, 0);
       
-      if (selectedDate < today) {
-        this.setCustomValidity('La date ne peut pas être dans le passé');
-        this.classList.add('is-invalid');
-      } else {
-        this.setCustomValidity('');
-        this.classList.remove('is-invalid');
+      if (selectedDate < today) return { valid: false, message: 'La date ne peut pas être dans le passé' };
+      return { valid: true, message: '' };
+    },
+    heure_debut: (value) => {
+      if (!value.trim()) return { valid: false, message: 'L\'heure de début est obligatoire' };
+      return { valid: true, message: '' };
+    },
+    heure_fin: (value) => {
+      if (!value.trim()) return { valid: false, message: 'L\'heure de fin est obligatoire' };
+      if (heureDebutInput.value && value <= heureDebutInput.value) {
+        return { valid: false, message: 'L\'heure de fin doit être après l\'heure de début' };
       }
-    });
-  }
-  
-  // Validation des heures (fin > début)
-  const startTimeInput = document.querySelector('input[name="heure_debut"]');
-  const endTimeInput = document.querySelector('input[name="heure_fin"]');
-  
-  function validateTimeRange() {
-    if (startTimeInput.value && endTimeInput.value) {
-      if (startTimeInput.value >= endTimeInput.value) {
-        endTimeInput.setCustomValidity('L\'heure de fin doit être après l\'heure de début');
-        endTimeInput.classList.add('is-invalid');
-      } else {
-        endTimeInput.setCustomValidity('');
-        endTimeInput.classList.remove('is-invalid');
+      return { valid: true, message: '' };
+    },
+    statut: (value) => {
+      if (!value.trim()) return { valid: false, message: 'Le statut est obligatoire' };
+      if (!['active', 'Inactif'].includes(value)) return { valid: false, message: 'Statut invalide' };
+      return { valid: true, message: '' };
+    },
+    description: (value) => {
+      if (!value.trim()) return { valid: false, message: 'La description est obligatoire' };
+      if (value.trim().length < 10) return { valid: false, message: 'La description doit contenir au moins 10 caractères' };
+      if (value.trim().length > 1000) return { valid: false, message: 'La description ne peut pas dépasser 1000 caractères' };
+      // Vérification des caractères autorisés : lettres uniquement, espaces, ponctuation, tirets, apostrophes
+      if (!/^[a-zA-ZÀ-ÿ\s\-\'\.\,\!\?\:\;\(\)]+$/.test(value.trim())) {
+        return { valid: false, message: 'La description ne peut contenir que des lettres, espaces et ponctuation autorisée' };
+      }
+      return { valid: true, message: '' };
+    }
+  };
+
+  // Validation en temps réel pour chaque champ
+  Object.keys(validations).forEach(fieldName => {
+    const field = document.getElementById(fieldName);
+    if (field) {
+      // Validation au chargement si le champ a une valeur
+      if (field.value.trim()) {
+        validateField(field, validations[fieldName]);
+      }
+      
+      // Validation quand on quitte le champ
+      field.addEventListener('blur', function() {
+        validateField(this, validations[fieldName]);
+      });
+      
+      // Validation aussi au changement pour feedback immédiat
+      field.addEventListener('input', function() {
+        if (this.value.trim()) {
+          validateField(this, validations[fieldName]);
+        } else {
+          // Si le champ devient vide, afficher l'erreur
+          this.classList.remove('is-valid');
+          this.classList.add('is-invalid');
+          const errorElement = document.getElementById(this.id + '-error');
+          if (errorElement) {
+            errorElement.textContent = validations[fieldName]('').message;
+          }
+        }
+      });
+      
+      // Validation spéciale pour les heures (vérifier la cohérence)
+      if (fieldName === 'heure_debut' || fieldName === 'heure_fin') {
+        field.addEventListener('change', function() {
+          if (heureDebutInput.value && heureFinInput.value) {
+            validateField(heureFinInput, validations.heure_fin);
+          }
+        });
       }
     }
-  }
-  
-  if (startTimeInput && endTimeInput) {
-    startTimeInput.addEventListener('change', validateTimeRange);
-    endTimeInput.addEventListener('change', validateTimeRange);
+  });
+
+  // Validation du formulaire avant soumission
+  form.addEventListener('submit', function(event) {
+    event.preventDefault();
+    
+    let isFormValid = true;
+    
+    // Valider tous les champs obligatoires
+    Object.keys(validations).forEach(fieldName => {
+      const field = document.getElementById(fieldName);
+      if (field) {
+        const isValid = validateField(field, validations[fieldName]);
+        if (!isValid) {
+          isFormValid = false;
+        }
+      }
+    });
+
+    // Si le formulaire est valide, le soumettre
+    if (isFormValid) {
+      form.submit();
+    }
+  });
+
+  // Contrôle de saisie en temps réel pour le nom de l'activité
+  if (nomInput) {
+    nomInput.addEventListener('input', function(e) {
+      // Filtrer les caractères non autorisés (pas de chiffres)
+      const allowedChars = /[a-zA-ZÀ-ÿ\s\-\'\.]/;
+      let value = this.value;
+      let filteredValue = '';
+      
+      for (let i = 0; i < value.length; i++) {
+        if (allowedChars.test(value[i])) {
+          filteredValue += value[i];
+        }
+      }
+      
+      if (filteredValue !== value) {
+        this.value = filteredValue;
+      }
+    });
+
+    // Empêcher le collage de caractères non autorisés
+    nomInput.addEventListener('paste', function(e) {
+      e.preventDefault();
+      const pastedText = (e.clipboardData || window.clipboardData).getData('text');
+      const cleanText = pastedText.replace(/[^a-zA-ZÀ-ÿ\s\-\'\.]/g, '');
+      this.value = cleanText;
+    });
   }
 });
 </script>
