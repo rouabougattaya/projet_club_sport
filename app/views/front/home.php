@@ -19,8 +19,113 @@
   <link rel="stylesheet" href="css/bootstrap-datepicker.css">
   <link rel="stylesheet" href="fonts/flaticon/font/flaticon.css">
   <link rel="stylesheet" href="css/aos.css">
-  <link href="css/jquery.mb.YTPlayer.min.css" media="all" rel="stylesheet" type="text/css">
   <link rel="stylesheet" href="css/style.css">
+  
+  <!-- Styles pour la vidéo d'arrière-plan -->
+  <style>
+    .intro-section {
+      position: relative;
+      min-height: 100vh;
+      width: 100vw;
+      display: flex;
+      align-items: center;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      overflow: hidden;
+      margin: 0;
+      padding: 0;
+    }
+    
+    .video-background {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 1;
+      overflow: hidden;
+    }
+    
+    .video-background iframe {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 100vw;
+      height: 100vh;
+      min-width: 100%;
+      min-height: 100%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      object-fit: cover;
+      /* Solution pour couvrir tout l'écran sans barres noires */
+      width: 100vw;
+      height: 100vh;
+      /* Agrandir la vidéo pour éviter les barres noires */
+      width: calc(100vw + 30%);
+      height: calc(100vh + 30%);
+      /* Ajuster la position et l'échelle */
+      transform: translate(-50%, -50%) scale(1.3);
+      /* Assurer que la vidéo couvre tout */
+      object-fit: cover;
+      background-size: cover;
+      background-position: center;
+    }
+    
+    /* Solution alternative pour différents ratios d'écran */
+    @media (min-aspect-ratio: 16/9) {
+      .video-background iframe {
+        width: calc(100vw + 40%);
+        height: calc(100vh + 40%);
+        transform: translate(-50%, -50%) scale(1.4);
+      }
+    }
+    
+    @media (max-aspect-ratio: 16/9) {
+      .video-background iframe {
+        width: calc(100vw + 50%);
+        height: calc(100vh + 50%);
+        transform: translate(-50%, -50%) scale(1.5);
+      }
+    }
+    
+    .video-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.3);
+      z-index: 2;
+    }
+    
+    .intro-content {
+      position: relative;
+      z-index: 3;
+      width: 100%;
+      padding: 0;
+    }
+    
+    /* Assurer que la section prend tout l'écran */
+    body {
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+    }
+    
+    .site-wrap {
+      margin: 0;
+      padding: 0;
+    }
+    
+    @media (max-width: 768px) {
+      .video-background iframe {
+        display: none;
+      }
+      
+      .intro-section {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      }
+    }
+  </style>
 </head>
 
 <body data-spy="scroll" data-target=".site-navbar-target" data-offset="300">
@@ -56,15 +161,15 @@
     </header>
 
     <div class="intro-section" id="home-section">
-      <!-- Vidéo YouTube en arrière-plan avec jquery.mb.YTPlayer -->
-      <a id="bgndVideo" class="player"
-        data-property="{videoURL:'https://www.youtube.com/watch?v=w-cRWOjlk8c',showYTLogo:false, showAnnotations: false, showControls: false, cc_load_policy: false, containment:'#home-section',autoPlay:true, mute:true, startAt:255, stopAt: 271, opacity:1}">
-      </a>
+      <!-- Vidéo YouTube en arrière-plan -->
+      <div class="video-background">
+        <div id="youtube-video"></div>
+      </div>
       
       <!-- Overlay sombre pour améliorer la lisibilité du texte -->
       <div class="video-overlay"></div>
       
-      <div class="container">
+      <div class="container intro-content">
         <div class="row align-items-center">
           <div class="col-lg-12 mx-auto text-center" data-aos="fade-up">
             <h1 class="mb-3 text-white">Bienvenue <?= htmlspecialchars($_SESSION['user']['prenom'] . ' ' . $_SESSION['user']['nom']) ?> !</h1>
@@ -244,32 +349,120 @@
     <script src="js/aos.js"></script>
     <script src="js/jquery.fancybox.min.js"></script>
     <script src="js/jquery.sticky.js"></script>
-    <script src="js/jquery.mb.YTPlayer.min.js"></script>
     <script src="js/main.js"></script>
     
-    <!-- Script pour initialiser la vidéo YouTube en arrière-plan -->
+    <!-- Script pour contrôler la vidéo YouTube avec timing précis -->
     <script>
-      $(document).ready(function() {
-        // Initialiser le player YouTube en arrière-plan
-        $("#bgndVideo").YTPlayer({
-          videoURL: 'https://www.youtube.com/watch?v=w-cRWOjlk8c',
-          showYTLogo: false,
-          showAnnotations: false,
-          showControls: false,
-          cc_load_policy: false,
-          containment: '#home-section',
-          autoPlay: true,
-          mute: true,
-          startAt: 255,
-          stopAt: 271,
-          opacity: 1,
-          onReady: function() {
-            console.log('Vidéo YouTube prête');
+      var player;
+      var startTime = 255; // 4 minutes 15 secondes
+      var endTime = 271;   // 4 minutes 31 secondes
+      var checkInterval;
+      
+      // Charger l'API YouTube
+      var tag = document.createElement('script');
+      tag.src = "https://www.youtube.com/iframe_api";
+      var firstScriptTag = document.getElementsByTagName('script')[0];
+      firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+      
+      // Fonction appelée quand l'API YouTube est prête
+      function onYouTubeIframeAPIReady() {
+        console.log('API YouTube prête');
+        player = new YT.Player('youtube-video', {
+          height: '100%',
+          width: '100%',
+          videoId: 'w-cRWOjlk8c',
+          playerVars: {
+            'autoplay': 1,
+            'mute': 1,
+            'controls': 0,
+            'showinfo': 0,
+            'rel': 0,
+            'modestbranding': 1,
+            'iv_load_policy': 3,
+            'cc_load_policy': 0,
+            'playsinline': 1,
+            'start': startTime
           },
-          onError: function(error) {
-            console.log('Erreur vidéo YouTube:', error);
-            // Fallback vers un arrière-plan statique
-            $('#home-section').css('background', 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)');
+          events: {
+            'onReady': onPlayerReady,
+            'onStateChange': onPlayerStateChange,
+            'onError': onPlayerError
+          }
+        });
+      }
+      
+      // Fonction appelée quand le player est prêt
+      function onPlayerReady(event) {
+        console.log('Vidéo YouTube prête');
+        event.target.seekTo(startTime);
+        event.target.playVideo();
+        startTimeCheck();
+      }
+      
+      // Fonction appelée quand l'état du player change
+      function onPlayerStateChange(event) {
+        console.log('État du player:', event.data);
+        if (event.data == YT.PlayerState.PLAYING) {
+          startTimeCheck();
+        } else if (event.data == YT.PlayerState.PAUSED || event.data == YT.PlayerState.ENDED) {
+          stopTimeCheck();
+        }
+      }
+      
+      // Démarrer la vérification du temps
+      function startTimeCheck() {
+        if (checkInterval) {
+          clearInterval(checkInterval);
+        }
+        checkInterval = setInterval(checkTime, 1000);
+      }
+      
+      // Arrêter la vérification du temps
+      function stopTimeCheck() {
+        if (checkInterval) {
+          clearInterval(checkInterval);
+          checkInterval = null;
+        }
+      }
+      
+      // Fonction pour vérifier le temps et contrôler la boucle
+      function checkTime() {
+        if (player && player.getCurrentTime) {
+          try {
+            var currentTime = player.getCurrentTime();
+            console.log('Temps actuel:', currentTime);
+            
+            // Si on dépasse la fin, revenir au début de la séquence
+            if (currentTime >= endTime) {
+              console.log('Fin de séquence atteinte, retour au début');
+              player.seekTo(startTime);
+              player.playVideo();
+            }
+          } catch (e) {
+            console.log('Erreur lors de la vérification du temps:', e);
+          }
+        }
+      }
+      
+      // Fonction appelée en cas d'erreur
+      function onPlayerError(event) {
+        console.log('Erreur vidéo YouTube:', event.data);
+        // Fallback vers un arrière-plan statique
+        $('#home-section').css('background', 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)');
+      }
+      
+      // Gestion responsive pour mobile
+      $(document).ready(function() {
+        if (window.innerWidth <= 768) {
+          $('#youtube-video').hide();
+        }
+        
+        // Gestion du redimensionnement de la fenêtre
+        $(window).resize(function() {
+          if (window.innerWidth <= 768) {
+            $('#youtube-video').hide();
+          } else {
+            $('#youtube-video').show();
           }
         });
       });

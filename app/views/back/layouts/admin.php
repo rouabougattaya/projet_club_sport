@@ -163,7 +163,7 @@
     .admin-nav a:hover,
     .admin-nav a.active {
       color: var(--admin-text-light);
-      transform: translateX(5px);
+      transform: none;
     }
 
     .admin-nav a:hover .navicon,
@@ -242,10 +242,10 @@
       flex-shrink: 0;
     }
 
-    .admin-user-info .user-text {
-      flex: 1;
-      min-width: 0;
-    }
+    .admin-user-info {
+  width: 100%;
+  box-sizing: border-box;
+}
 
     .admin-user-info .user-name {
       color: var(--admin-text-light);
@@ -258,13 +258,16 @@
     }
 
     .admin-user-info .user-role {
-      color: var(--admin-text-muted);
-      font-size: 0.8rem;
-      margin: 0;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
+  color: var(--admin-text-muted);
+  font-size: 0.8rem;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: left;   /* ✅ toujours à gauche */
+}
+
+
 
     .admin-user-info .logout-btn {
       width: 100%;

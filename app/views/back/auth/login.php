@@ -1,6 +1,8 @@
  <form method="post" action="index.php?controller=auth&action=login" id="loginForm" novalidate>
   <div class="form-group">
-    <label for="email" class="form-label">Adresse email</label>
+    <label for="email" class="form-label">
+      <i class="bi bi-envelope me-2"></i>Adresse email
+    </label>
     <input type="email" id="email" name="email" class="form-control" 
            placeholder="Entrez votre email" 
            value="<?= isset($email) ? htmlspecialchars($email) : '' ?>" 
@@ -10,7 +12,9 @@
   </div>
   
   <div class="form-group">
-    <label for="password" class="form-label">Mot de passe</label>
+    <label for="password" class="form-label">
+      <i class="bi bi-shield-lock me-2"></i>Mot de passe
+    </label>
     <input type="password" id="password" name="mot_de_passe" class="form-control" 
            placeholder="Entrez votre mot de passe" 
            required>
@@ -22,8 +26,8 @@
   </div>
   
   <button type="submit" class="btn-login" id="loginBtn">
-    <i class="bi bi-arrow-right"></i>
-    <span>Se connecter</span>
+    <i class="bi bi-arrow-right-circle"></i>
+    <span>Accéder à l'espace sport</span>
   </button>
 </form>
 

@@ -437,20 +437,20 @@ $isEntraineur = !empty($isEntraineur) && $isEntraineur;
 
 .stats-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 18px;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
 }
 
 .stat-card {
     background: white;
     border-radius: 12px;
-    padding: 18px;
+    padding: 14px;
     box-shadow: var(--shadow);
     transition: all 0.3s ease;
     border-left: 4px solid;
     display: flex;
     align-items: center;
-    gap: 16px;
+    gap: 12px;
 }
 
 .stat-card:hover {
@@ -464,15 +464,15 @@ $isEntraineur = !empty($isEntraineur) && $isEntraineur;
 .stat-quaternary { border-left-color: var(--quaternary-blue); }
 
 .stat-icon {
-    width: 45px;
-    height: 45px;
+    width: 40px;
+    height: 40px;
     background: var(--light-blue);
-    border-radius: 10px;
+    border-radius: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
     color: var(--primary-blue);
-    font-size: 1.5rem;
+    font-size: 1.3rem;
 }
 
 .stat-content {
@@ -480,11 +480,11 @@ $isEntraineur = !empty($isEntraineur) && $isEntraineur;
 }
 
 .stat-number {
-    font-size: 2rem;
+    font-size: 1.6rem;
     font-weight: 700;
     color: var(--text-dark);
     line-height: 1;
-    margin-bottom: 6px;
+    margin-bottom: 4px;
 }
 
 .stat-label {

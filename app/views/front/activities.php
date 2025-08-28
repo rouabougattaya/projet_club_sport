@@ -19,8 +19,138 @@
   <link rel="stylesheet" href="css/bootstrap-datepicker.css">
   <link rel="stylesheet" href="fonts/flaticon/font/flaticon.css">
   <link rel="stylesheet" href="css/aos.css">
-  <link href="css/jquery.mb.YTPlayer.min.css" media="all" rel="stylesheet" type="text/css">
   <link rel="stylesheet" href="css/style.css">
+  
+  <!-- Styles pour la vidéo d'arrière-plan -->
+  <style>
+    .intro-section {
+      position: relative;
+      min-height: 100vh;
+      width: 100vw;
+      display: flex;
+      align-items: center;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      overflow: hidden;
+      margin: 0;
+      padding: 0;
+    }
+    
+    .video-background {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 1;
+      overflow: hidden;
+    }
+    
+    .video-background iframe {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 100vw;
+      height: 100vh;
+      min-width: 100%;
+      min-height: 100%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      object-fit: cover;
+      /* Solution pour couvrir tout l'écran sans barres noires */
+      width: 100vw;
+      height: 100vh;
+      /* Agrandir la vidéo pour éviter les barres noires */
+      width: calc(100vw + 30%);
+      height: calc(100vh + 30%);
+      /* Ajuster la position et l'échelle */
+      transform: translate(-50%, -50%) scale(1.3);
+      /* Assurer que la vidéo couvre tout */
+      object-fit: cover;
+      background-size: cover;
+      background-position: center;
+    }
+    
+    /* Solution alternative pour différents ratios d'écran */
+    @media (min-aspect-ratio: 16/9) {
+      .video-background iframe {
+        width: calc(100vw + 40%);
+        height: calc(100vh + 40%);
+        transform: translate(-50%, -50%) scale(1.4);
+      }
+    }
+    
+    @media (max-aspect-ratio: 16/9) {
+      .video-background iframe {
+        width: calc(100vw + 50%);
+        height: calc(100vh + 50%);
+        transform: translate(-50%, -50%) scale(1.5);
+      }
+    }
+    
+    .video-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.3);
+      z-index: 2;
+    }
+    
+    .intro-content {
+      position: relative;
+      z-index: 3;
+      width: 100%;
+      padding: 0;
+    }
+    
+    /* Assurer que la section prend tout l'écran */
+    body {
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+    }
+    
+    .site-wrap {
+      margin: 0;
+      padding: 0;
+    }
+    
+    @media (max-width: 768px) {
+      .video-background iframe {
+        display: none;
+      }
+      
+      .intro-section {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      }
+    }
+    
+    /* Styles pour les cartes d'activités */
+    .activity-card {
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    
+    .activity-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 5px 15px rgba(220, 53, 69, 0.2);
+      border-color: #dc3545;
+    }
+    
+
+    
+    .btn:hover {
+      background: #c82333 !important;
+    }
+    
+    /* Responsive pour les cartes */
+    @media (max-width: 768px) {
+      .activity-card {
+        margin-bottom: 15px;
+      }
+    }
+  </style>
 </head>
 
 <body data-spy="scroll" data-target=".site-navbar-target" data-offset="300">
@@ -56,15 +186,15 @@
     </header>
 
     <div class="intro-section" id="home-section">
-      <!-- Vidéo YouTube en arrière-plan avec jquery.mb.YTPlayer -->
-      <a id="bgndVideo" class="player"
-        data-property="{videoURL:'https://www.youtube.com/watch?v=w-cRWOjlk8c',showYTLogo:false, showAnnotations: false, showControls: false, cc_load_policy: false, containment:'#home-section',autoPlay:true, mute:true, startAt:255, stopAt: 271, opacity:1}">
-      </a>
+      <!-- Vidéo YouTube en arrière-plan -->
+      <div class="video-background">
+        <div id="youtube-video"></div>
+      </div>
       
       <!-- Overlay sombre pour améliorer la lisibilité du texte -->
       <div class="video-overlay"></div>
       
-      <div class="container">
+      <div class="container intro-content">
         <div class="row align-items-center">
           <div class="col-lg-12 mx-auto text-center" data-aos="fade-up">
             <h1 class="mb-3 text-white">Activités Disponibles</h1>
@@ -87,11 +217,10 @@
             </div>
         <?php endforeach; ?>
 
-        <div class="row justify-content-center text-center mb-5">
+        <div class="row justify-content-center text-center mb-4">
           <div class="col-md-8 section-heading">
-            <span class="subheading">Catalogue des Activités</span>
-            <h2 class="heading mb-3">Toutes les Activités</h2>
-            <p>Parcourez notre sélection d'activités sportives et trouvez celle qui vous convient.</p>
+            <h2 class="heading mb-3" style="color: #dc3545; font-weight: 700; font-size: 2rem;">Activités Disponibles</h2>
+            <p style="color: #6c757d; font-size: 1rem;">Découvrez nos activités sportives</p>
           </div>
         </div>
 
@@ -105,55 +234,57 @@
             </div>
           <?php else: ?>
             <?php foreach ($availableActivities as $activity): ?>
-              <div class="col-lg-4 col-md-6 mb-4">
-                <div class="class-item border rounded shadow-sm p-3 h-100">
-                  <div class="d-flex align-items-start mb-3">
-                    <a href="index.php?controller=front&action=activity&id=<?= $activity['id'] ?>" class="class-item-thumbnail me-3">
-                      <img src="images/img_1.jpg" alt="Activité sportive" class="rounded" style="width: 80px; height: 80px; object-fit: cover;">
-                    </a>
-                    <div class="flex-grow-1">
-                      <div class="d-flex justify-content-between align-items-start mb-2">
-                        <h5 class="mb-1 text-primary">
-                          <a href="index.php?controller=front&action=activity&id=<?= $activity['id'] ?>" class="text-decoration-none">
-                            <?= htmlspecialchars($activity['nom']) ?>
-                          </a>
-                        </h5>
+              <div class="col-lg-3 col-md-4 col-sm-6 mb-3">
+                <div class="activity-card" style="background: white; border: 1px solid #dee2e6; border-radius: 8px; overflow: hidden; transition: all 0.3s ease; height: 100%;">
+                  <!-- Contenu de la carte -->
+                  <div class="activity-content p-3">
+                    <!-- Titre de l'activité -->
+                    <h5 class="activity-title mb-2" style="color: #dc3545; font-weight: 600; font-size: 1rem; margin: 0; text-align: center;">
+                      <a href="index.php?controller=front&action=activity&id=<?= $activity['id'] ?>" style="text-decoration: none; color: inherit;">
+                        <?= htmlspecialchars($activity['nom']) ?>
+                      </a>
+                    </h5>
+                    
+                    <!-- Coach -->
+                    <div class="activity-coach mb-2" style="text-align: center;">
+                      <small style="color: #6c757d; font-size: 0.8rem;">
+                        <i class="icon-user me-1"></i>
+                        <?= htmlspecialchars(($activity['coach_prenom'] ?? '') . ' ' . ($activity['coach_nom'] ?? '')) ?>
+                      </small>
+                    </div>
+                    
+                    <!-- Date et heure -->
+                    <div class="activity-details mb-2">
+                      <div style="display: flex; align-items: center; margin-bottom: 4px;">
+                        <i class="icon-calendar me-1" style="color: #dc3545; font-size: 12px;"></i>
+                        <small style="color: #6c757d; font-size: 0.75rem;">
+                          <?= date('d/m/Y', strtotime($activity['date_activite'])) ?>
+                        </small>
+                      </div>
+                      <div style="display: flex; align-items: center;">
+                        <i class="icon-clock me-1" style="color: #dc3545; font-size: 12px;"></i>
+                        <small style="color: #6c757d; font-size: 0.75rem;">
+                          <?= substr($activity['heure_debut'], 0, 5) ?> - <?= substr($activity['heure_fin'], 0, 5) ?>
+                        </small>
                       </div>
                     </div>
-                  </div>
-                  
-                  <div class="activity-details mb-3">
-                    <div class="d-flex align-items-center mb-2">
-                      <i class="icon-user me-2 text-muted"></i>
-                      <span class="text-muted">
-                        <?= htmlspecialchars(($activity['coach_prenom'] ?? '') . ' ' . ($activity['coach_nom'] ?? '')) ?>
-                      </span>
+                    
+                    <!-- Description courte -->
+                    <div class="activity-description mb-3">
+                      <p style="color: #6c757d; font-size: 0.75rem; line-height: 1.3; margin: 0; text-align: center;">
+                        <?= htmlspecialchars(substr($activity['description'], 0, 60)) ?>...
+                      </p>
                     </div>
-                    <div class="d-flex align-items-center mb-3">
-                      <i class="icon-calendar me-3 text-muted"></i>
-                      <span class="text-muted">
-                        <?= date('d/m/Y', strtotime($activity['date_activite'])) ?>
-                      </span>
+                    
+                    <!-- Bouton d'action -->
+                    <div class="activity-action">
+                      <a href="index.php?controller=front&action=activity&id=<?= $activity['id'] ?>" 
+                         class="btn btn-sm" 
+                         style="width: 100%; background: #dc3545; border: none; color: white; padding: 6px 12px; border-radius: 4px; font-size: 0.8rem; text-decoration: none; display: inline-block; text-align: center;">
+                        <i class="icon-eye me-1"></i>
+                        Détails
+                      </a>
                     </div>
-                    <div class="d-flex align-items-center mb-2">
-                      <i class="icon-clock me-2 text-muted"></i>
-                      <span class="text-muted">
-                        <?= substr($activity['heure_debut'], 0, 5) ?> - <?= substr($activity['heure_fin'], 0, 5) ?>
-                      </span>
-                    </div>
-                  </div>
-                  
-                  <div class="activity-description mb-3">
-                    <p class="text-muted small mb-0">
-                      <?= htmlspecialchars(substr($activity['description'], 0, 100)) ?>...
-                    </p>
-                  </div>
-                  
-                  <div class="d-flex justify-content-center mt-auto">
-                    <a href="index.php?controller=front&action=activity&id=<?= $activity['id'] ?>" class="btn btn-primary btn-sm">
-                      <i class="icon-eye me-1"></i>
-                      Voir les détails
-                    </a>
                   </div>
                 </div>
               </div>
@@ -188,32 +319,120 @@
     <script src="js/aos.js"></script>
     <script src="js/jquery.fancybox.min.js"></script>
     <script src="js/jquery.sticky.js"></script>
-    <script src="js/jquery.mb.YTPlayer.min.js"></script>
     <script src="js/main.js"></script>
     
-    <!-- Script pour initialiser la vidéo YouTube en arrière-plan -->
+    <!-- Script pour contrôler la vidéo YouTube avec timing précis -->
     <script>
-      $(document).ready(function() {
-        // Initialiser le player YouTube en arrière-plan
-        $("#bgndVideo").YTPlayer({
-          videoURL: 'https://www.youtube.com/watch?v=w-cRWOjlk8c',
-          showYTLogo: false,
-          showAnnotations: false,
-          showControls: false,
-          cc_load_policy: false,
-          containment: '#home-section',
-          autoPlay: true,
-          mute: true,
-          startAt: 255,
-          stopAt: 271,
-          opacity: 1,
-          onReady: function() {
-            console.log('Vidéo YouTube prête');
+      var player;
+      var startTime = 255; // 4 minutes 15 secondes
+      var endTime = 271;   // 4 minutes 31 secondes
+      var checkInterval;
+      
+      // Charger l'API YouTube
+      var tag = document.createElement('script');
+      tag.src = "https://www.youtube.com/iframe_api";
+      var firstScriptTag = document.getElementsByTagName('script')[0];
+      firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+      
+      // Fonction appelée quand l'API YouTube est prête
+      function onYouTubeIframeAPIReady() {
+        console.log('API YouTube prête');
+        player = new YT.Player('youtube-video', {
+          height: '100%',
+          width: '100%',
+          videoId: 'w-cRWOjlk8c',
+          playerVars: {
+            'autoplay': 1,
+            'mute': 1,
+            'controls': 0,
+            'showinfo': 0,
+            'rel': 0,
+            'modestbranding': 1,
+            'iv_load_policy': 3,
+            'cc_load_policy': 0,
+            'playsinline': 1,
+            'start': startTime
           },
-          onError: function(error) {
-            console.log('Erreur vidéo YouTube:', error);
-            // Fallback vers un arrière-plan statique
-            $('#home-section').css('background', 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)');
+          events: {
+            'onReady': onPlayerReady,
+            'onStateChange': onPlayerStateChange,
+            'onError': onPlayerError
+          }
+        });
+      }
+      
+      // Fonction appelée quand le player est prêt
+      function onPlayerReady(event) {
+        console.log('Vidéo YouTube prête');
+        event.target.seekTo(startTime);
+        event.target.playVideo();
+        startTimeCheck();
+      }
+      
+      // Fonction appelée quand l'état du player change
+      function onPlayerStateChange(event) {
+        console.log('État du player:', event.data);
+        if (event.data == YT.PlayerState.PLAYING) {
+          startTimeCheck();
+        } else if (event.data == YT.PlayerState.PAUSED || event.data == YT.PlayerState.ENDED) {
+          stopTimeCheck();
+        }
+      }
+      
+      // Démarrer la vérification du temps
+      function startTimeCheck() {
+        if (checkInterval) {
+          clearInterval(checkInterval);
+        }
+        checkInterval = setInterval(checkTime, 1000);
+      }
+      
+      // Arrêter la vérification du temps
+      function stopTimeCheck() {
+        if (checkInterval) {
+          clearInterval(checkInterval);
+          checkInterval = null;
+        }
+      }
+      
+      // Fonction pour vérifier le temps et contrôler la boucle
+      function checkTime() {
+        if (player && player.getCurrentTime) {
+          try {
+            var currentTime = player.getCurrentTime();
+            console.log('Temps actuel:', currentTime);
+            
+            // Si on dépasse la fin, revenir au début de la séquence
+            if (currentTime >= endTime) {
+              console.log('Fin de séquence atteinte, retour au début');
+              player.seekTo(startTime);
+              player.playVideo();
+            }
+          } catch (e) {
+            console.log('Erreur lors de la vérification du temps:', e);
+          }
+        }
+      }
+      
+      // Fonction appelée en cas d'erreur
+      function onPlayerError(event) {
+        console.log('Erreur vidéo YouTube:', event.data);
+        // Fallback vers un arrière-plan statique
+        $('#home-section').css('background', 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)');
+      }
+      
+      // Gestion responsive pour mobile
+      $(document).ready(function() {
+        if (window.innerWidth <= 768) {
+          $('#youtube-video').hide();
+        }
+        
+        // Gestion du redimensionnement de la fenêtre
+        $(window).resize(function() {
+          if (window.innerWidth <= 768) {
+            $('#youtube-video').hide();
+          } else {
+            $('#youtube-video').show();
           }
         });
       });
