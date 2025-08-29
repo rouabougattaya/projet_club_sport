@@ -40,11 +40,14 @@ class Inscription {
 
 	public function getByIdWithRelations(int $id): ?array {
 		$sql = "SELECT i.*, 
-				a.nom AS activity_nom, a.id_entraineur AS activity_coach_id,
-				u.nom AS user_nom, u.prenom AS user_prenom
+				a.nom AS activity_nom, a.id_entraineur AS activity_coach_id, a.date_activite, 
+				a.heure_debut, a.heure_fin, a.description,
+				u.nom AS user_nom, u.prenom AS user_prenom, u.telephone AS user_telephone,
+				coach.prenom AS coach_prenom, coach.nom AS coach_nom
 			FROM inscriptions i
 			INNER JOIN activities a ON a.id = i.activity_id
 			INNER JOIN users u ON u.id = i.user_id
+			LEFT JOIN users coach ON coach.id = a.id_entraineur
 			WHERE i.id = ? LIMIT 1";
 		$stmt = $this->pdo->prepare($sql);
 		$stmt->execute([$id]);

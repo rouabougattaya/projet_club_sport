@@ -29,6 +29,13 @@
     <i class="bi bi-arrow-right-circle"></i>
     <span>Accéder à l'espace sport</span>
   </button>
+  
+  <div class="forgot-password-link">
+    <a href="/projet-new-app-web1%20hlili/mail/forgot_password.php" class="forgot-link">
+      <i class="bi bi-question-circle me-2"></i>
+      Mot de passe oublié ?
+    </a>
+  </div>
 </form>
 
 <script>

@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/../models/Inscription.php';
 require_once __DIR__ . '/../models/Activity.php';
+require_once __DIR__ . '/../../sms/SmsService.php';
 require_once __DIR__ . '/../../core/config/database.php';
 require_once __DIR__ . '/../../core/Flash.php';
 
@@ -45,14 +46,42 @@ class InscriptionsController {
 		$this->requireAuth(['admin', 'entraineur']);
 		$pdo = Database::connect();
 		$inscModel = new Inscription($pdo);
+		$smsService = new SmsService();
 		$sessionUser = $_SESSION['user'];
 		$isAdmin = strtolower((string)($sessionUser['role'] ?? '')) === 'admin';
 		$id = (int)($_GET['id'] ?? 0);
 		$insc = $inscModel->getByIdWithRelations($id);
 		if (!$insc) { http_response_code(404); echo 'Inscription introuvable'; exit; }
 		if (!$isAdmin && (int)$insc['activity_coach_id'] !== (int)$sessionUser['id']) { http_response_code(403); echo 'Accès refusé'; exit; }
+		
+		// Mettre à jour le statut
 		$inscModel->updateStatus($id, 'validée');
-		Flash::add('success', 'Inscription validée');
+		
+		// Envoyer SMS de notification si le téléphone est disponible
+		if (!empty($insc['user_telephone'])) {
+			$userName = $insc['user_prenom'] . ' ' . $insc['user_nom'];
+			$activityDate = date('d/m/Y', strtotime($insc['date_activite']));
+			$activityTime = $insc['heure_debut'];
+			$coachName = $insc['coach_prenom'] . ' ' . $insc['coach_nom'];
+			
+			$smsResult = $smsService->sendAcceptanceNotification(
+				$userName,
+				$insc['activity_nom'],
+				$activityDate,
+				$activityTime,
+				$coachName,
+				$insc['user_telephone']
+			);
+			
+			if ($smsResult['success']) {
+				Flash::add('success', 'Inscription validée et SMS envoyé avec succès');
+			} else {
+				Flash::add('warning', 'Inscription validée mais échec de l\'envoi du SMS: ' . $smsResult['message']);
+			}
+		} else {
+			Flash::add('success', 'Inscription validée (pas de numéro de téléphone pour SMS)');
+		}
+		
 		header('Location: index.php?controller=inscriptions&action=index');
 		exit;
 	}
@@ -77,14 +106,42 @@ class InscriptionsController {
 		$this->requireAuth(['admin', 'entraineur']);
 		$pdo = Database::connect();
 		$inscModel = new Inscription($pdo);
+		$smsService = new SmsService();
 		$sessionUser = $_SESSION['user'];
 		$isAdmin = strtolower((string)($sessionUser['role'] ?? '')) === 'admin';
 		$id = (int)($_GET['id'] ?? 0);
 		$insc = $inscModel->getByIdWithRelations($id);
 		if (!$insc) { http_response_code(404); echo 'Inscription introuvable'; exit; }
 		if (!$isAdmin && (int)$insc['activity_coach_id'] !== (int)$sessionUser['id']) { http_response_code(403); echo 'Accès refusé'; exit; }
+		
+		// Mettre à jour le statut
 		$inscModel->updateStatus($id, 'refusée');
-		Flash::add('success', 'Inscription refusée');
+		
+		// Envoyer SMS de notification si le téléphone est disponible
+		if (!empty($insc['user_telephone'])) {
+			$userName = $insc['user_prenom'] . ' ' . $insc['user_nom'];
+			$activityDate = date('d/m/Y', strtotime($insc['date_activite']));
+			$activityTime = $insc['heure_debut'];
+			$coachName = $insc['coach_prenom'] . ' ' . $insc['coach_nom'];
+			
+			$smsResult = $smsService->sendRejectionNotification(
+				$userName,
+				$insc['activity_nom'],
+				$activityDate,
+				$activityTime,
+				$coachName,
+				$insc['user_telephone']
+			);
+			
+			if ($smsResult['success']) {
+				Flash::add('success', 'Inscription refusée et SMS envoyé avec succès');
+			} else {
+				Flash::add('warning', 'Inscription refusée mais échec de l\'envoi du SMS: ' . $smsResult['message']);
+			}
+		} else {
+			Flash::add('success', 'Inscription refusée (pas de numéro de téléphone pour SMS)');
+		}
+		
 		header('Location: index.php?controller=inscriptions&action=index');
 		exit;
 	}

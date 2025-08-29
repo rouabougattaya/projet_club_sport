@@ -84,4 +84,29 @@ public function getAll() {
         $stmt = $this->pdo->prepare("DELETE FROM users WHERE id = ?");
         return $stmt->execute([$id]);
     }
+
+    // Nouvelles méthodes pour la réinitialisation de mot de passe
+    public function createPasswordResetToken($email) {
+        $token = bin2hex(random_bytes(32));
+        
+        $stmt = $this->pdo->prepare("UPDATE users SET reset_token = ? WHERE email = ?");
+        return $stmt->execute([$token, $email]) ? $token : false;
+    }
+    
+    public function getUserByResetToken($token) {
+        $stmt = $this->pdo->prepare("SELECT * FROM users WHERE reset_token = ? LIMIT 1");
+        $stmt->execute([$token]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+    
+    public function clearResetToken($userId) {
+        $stmt = $this->pdo->prepare("UPDATE users SET reset_token = NULL WHERE id = ?");
+        return $stmt->execute([$userId]);
+    }
+    
+    public function resetPassword($userId, $newPassword) {
+        $hash = password_hash($newPassword, PASSWORD_DEFAULT);
+        $stmt = $this->pdo->prepare("UPDATE users SET mot_de_passe = ?, reset_token = NULL WHERE id = ?");
+        return $stmt->execute([$hash, $userId]);
+    }
 }
