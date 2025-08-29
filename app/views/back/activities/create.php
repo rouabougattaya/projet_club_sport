@@ -578,9 +578,9 @@ document.addEventListener('DOMContentLoaded', function() {
       if (!value.trim()) return { valid: false, message: 'La description est obligatoire' };
       if (value.trim().length < 10) return { valid: false, message: 'La description doit contenir au moins 10 caractères' };
       if (value.trim().length > 1000) return { valid: false, message: 'La description ne peut pas dépasser 1000 caractères' };
-      // Vérification des caractères autorisés : lettres uniquement, espaces, ponctuation, tirets, apostrophes
-      if (!/^[a-zA-ZÀ-ÿ\s\-\'\.\,\!\?\:\;\(\)]+$/.test(value.trim())) {
-        return { valid: false, message: 'La description ne peut contenir que des lettres, espaces et ponctuation autorisée' };
+      // Vérification des caractères autorisés : lettres, chiffres, espaces, ponctuation, tirets, apostrophes
+      if (!/^[a-zA-ZÀ-ÿ0-9\s\-\'\.\,\!\?\:\;\(\)]+$/.test(value.trim())) {
+        return { valid: false, message: 'La description ne peut contenir que des lettres, chiffres, espaces et ponctuation autorisée' };
       }
       return { valid: true, message: '' };
     }

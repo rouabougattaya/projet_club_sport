@@ -226,6 +226,11 @@
                 </td>
                 <td class="px-2 py-3 text-center">
                   <div class="btn-group" role="group">
+                    <a href="index.php?controller=user&action=show&id=<?= urlencode($user['id']) ?>"
+                       class="btn btn-sm btn-outline-info"
+                       title="Voir les détails">
+                      <i class="bi bi-eye"></i>
+                    </a>
                     <a href="index.php?controller=user&action=edit&id=<?= urlencode($user['id']) ?>"
                        class="btn btn-sm btn-outline-blue-violet"
                        title="Modifier">

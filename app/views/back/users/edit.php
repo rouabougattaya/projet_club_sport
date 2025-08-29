@@ -484,7 +484,7 @@ document.addEventListener('DOMContentLoaded', function() {
     adresse: (value) => {
       if (!value.trim()) return { valid: false, message: 'L\'adresse est obligatoire' };
       if (value.trim().length < 10) return { valid: false, message: 'L\'adresse doit contenir au moins 10 caractères' };
-      if (!/^[a-zA-ZÀ-ÿ\s\-\'\.]+$/.test(value.trim())) return { valid: false, message: 'L\'adresse ne peut contenir que des lettres, espaces, tirets et apostrophes' };
+      if (!/^[a-zA-ZÀ-ÿ\s\-\'\.\,]+$/.test(value.trim())) return { valid: false, message: 'L\'adresse ne peut contenir que des lettres, espaces, tirets et apostrophes' };
       return { valid: true, message: '' };
     },
     telephone: (value) => {

@@ -100,6 +100,22 @@ class Inscription {
 	}
 
 	/**
+	 * Récupère toutes les inscriptions pour une activité donnée avec les informations utilisateur
+	 */
+	public function getByActivityId(int $activityId): array {
+		$sql = "SELECT i.*, 
+				u.nom, u.prenom, u.email, u.telephone, u.role,
+				i.statut, i.date_inscription
+			FROM inscriptions i
+			INNER JOIN users u ON u.id = i.user_id
+			WHERE i.activity_id = ?
+			ORDER BY i.date_inscription DESC";
+		$stmt = $this->pdo->prepare($sql);
+		$stmt->execute([$activityId]);
+		return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+	}
+
+	/**
 	 * Vérifie si un utilisateur peut s'inscrire à une activité
 	 * (pas d'inscription active existante)
 	 */

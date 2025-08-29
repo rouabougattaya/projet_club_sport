@@ -3,6 +3,7 @@ require_once __DIR__ . '/../models/Activity.php';
 require_once __DIR__ . '/../../core/config/database.php';
 require_once __DIR__ . '/../../core/Flash.php';
 require_once __DIR__ . '/../models/User.php';
+require_once __DIR__ . '/../models/Inscription.php';
 
 class ActivitiesController {
 
@@ -196,6 +197,57 @@ class ActivitiesController {
 		Flash::add('success', 'Activité supprimée');
 		header('Location: index.php?controller=activities&action=index');
 		exit;
+	}
+
+	public function details(): void {
+		$this->requireAuth(['admin', 'entraineur', 'adherent']);
+		$pdo = Database::connect();
+		$activityModel = new Activity($pdo);
+		$inscriptionModel = new Inscription($pdo);
+		
+		$id = (int)($_GET['id'] ?? 0);
+		if ($id <= 0) {
+			Flash::add('error', 'ID d\'activité invalide.');
+			header('Location: index.php?controller=activities&action=index');
+			exit;
+		}
+		
+		$activity = $activityModel->getById($id);
+		if (!$activity) {
+			Flash::add('error', 'Activité non trouvée.');
+			header('Location: index.php?controller=activities&action=index');
+			exit;
+		}
+		
+		// Vérifier les permissions
+		$sessionUser = $_SESSION['user'];
+		$isAdmin = strtolower((string)($sessionUser['role'] ?? '')) === 'admin';
+		$isCoach = strtolower((string)($sessionUser['role'] ?? '')) === 'entraineur';
+		$isSelfCoach = $isCoach && (int)($sessionUser['id']) === (int)($activity['id_entraineur']);
+		
+		if (!$isAdmin && !$isSelfCoach && strtolower((string)($sessionUser['role'] ?? '')) !== 'adherent') {
+			Flash::add('error', 'Vous n\'avez pas les permissions pour voir cette activité.');
+			header('Location: index.php?controller=activities&action=index');
+			exit;
+		}
+		
+		// Récupérer les inscriptions pour cette activité
+		$inscriptions = $inscriptionModel->getByActivityId($id);
+		$inscriptionsCount = count($inscriptions);
+		
+		// Récupérer les informations de l'entraîneur
+		$userModel = new User($pdo);
+		$coach = $userModel->getById((int)$activity['id_entraineur']);
+		
+		$this->render('back/activities/details', [
+			'activity' => $activity,
+			'inscriptions' => $inscriptions,
+			'inscriptionsCount' => $inscriptionsCount,
+			'coach' => $coach,
+			'isAdmin' => $isAdmin,
+			'isCoach' => $isCoach,
+			'isSelfCoach' => $isSelfCoach
+		]);
 	}
 }
 

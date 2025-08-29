@@ -76,6 +76,22 @@ class UserController {
         $this->render('back/users/create');
     }
 
+    public function show() {
+        $pdo = Database::connect();
+        $model = new User($pdo);
+        $id = (int)($_GET['id'] ?? 0);
+        $this->ensureSelfOrAdmin($id);
+        $user = $model->getById($id);
+        
+        if (!$user) {
+            Flash::add('error', 'Utilisateur non trouvé');
+            header('Location: index.php?controller=user&action=index');
+            exit;
+        }
+        
+        $this->render('back/users/show', ['user' => $user]);
+    }
+
     public function edit() {
         $pdo = Database::connect();
         $model = new User($pdo);

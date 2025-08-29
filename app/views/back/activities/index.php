@@ -302,6 +302,11 @@
                 <?php endif; ?>
                 <td class="px-2 py-3 text-center">
                   <div class="btn-group" role="group">
+                    <a href="index.php?controller=activities&action=details&id=<?= urlencode($activity['id']) ?>"
+                       class="btn btn-sm btn-outline-info"
+                       title="Voir détails">
+                      <i class="bi bi-eye"></i>
+                    </a>
                     <a href="index.php?controller=activities&action=edit&id=<?= urlencode($activity['id']) ?>"
                        class="btn btn-sm btn-outline-primary"
                        title="Modifier">
